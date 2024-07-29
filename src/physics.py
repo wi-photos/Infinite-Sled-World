@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -22,9 +22,7 @@ from panda3d.bullet import BulletBoxShape
 from panda3d.bullet import BulletPlaneShape
 from panda3d.bullet import BulletRigidBodyNode
 from panda3d.bullet import BulletWorld
-from panda3d.core import NodePath
-from panda3d.core import RigidBodyCombiner
-from panda3d.core import Vec3
+from panda3d.core import *
 from random import randint
 from random import random
 

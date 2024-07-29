@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -18,19 +18,8 @@ AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 """
 from direct.showbase.DirectObject import DirectObject
-from panda3d.core import BitMask32
-from panda3d.core import Camera
-from panda3d.core import CollisionHandlerQueue
-from panda3d.core import CollisionNode
-from panda3d.core import CollisionRay
-from panda3d.core import CollisionSegment
-from panda3d.core import CollisionTraverser
-from panda3d.core import CollisionTube
-from panda3d.core import NodePath
-from panda3d.core import PandaNode
-from panda3d.core import Point3
-from panda3d.core import Vec3
-from panda3d.core import Vec4
+from panda3d.core import *
+
 import math
 from config import *
  

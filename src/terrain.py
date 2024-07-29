@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -31,8 +31,6 @@ generally responsible for the appearance of the terrain.
 The Terrain class ties all of these elements together. It is responsible for
 tiling together the terrain tiles and storing their common attributes.
 """
-__author__ = "Stephen Lujan"
-__date__ = "$Oct 27, 2010 4:47:05 AM$"
 
 import math
 
@@ -40,18 +38,7 @@ from collections import deque
 from config import *
 from direct.showbase.RandomNumGen import *
 from direct.task.Task import Task
-from panda3d.core import BitMask32
-from panda3d.core import CollisionHandlerQueue
-from panda3d.core import CollisionNode
-from panda3d.core import CollisionRay
-from panda3d.core import CollisionTraverser
-from panda3d.core import PNMImage
-from panda3d.core import PerlinNoise2
-from panda3d.core import StackedPerlinNoise2
-from panda3d.core import TimeVal
-from pandac.PandaModules import NodePath
-from pandac.PandaModules import PTAFloat
-from pandac.PandaModules import SceneGraphReducer
+from panda3d.core import *
 from populator import *
 from pstat_debug import pstat
 from terraintexturer import *

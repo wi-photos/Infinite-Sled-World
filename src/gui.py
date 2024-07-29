@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -22,13 +22,12 @@ gui.py: This file contains a gui for the real-time manipulation of settings
 related to the terrain engine. This is currently an implementation of Panda3d's
 DirectGui.
 """
-__author__ = "Stephen Lujan"
 
 from config import *
 from direct.gui.DirectGui import *
 from direct.gui.DirectGuiBase import DirectGuiWidget
-from pandac.PandaModules import TextNode
-from pandac.PandaModules import Vec4
+from panda3d.core import *
+
 
 ###############################################################################
 #   SlideControl

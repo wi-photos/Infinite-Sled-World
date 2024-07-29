@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -25,11 +25,6 @@ updated as appropriate for the skies condition.
 
 
 from panda3d.core import *
-from pandac.PandaModules import AmbientLight
-from pandac.PandaModules import Fog
-from pandac.PandaModules import TexGenAttrib
-from pandac.PandaModules import Texture
-from pandac.PandaModules import TextureStage
 from config import *
 
 class ColoredByTime():

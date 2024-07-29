@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -22,22 +22,12 @@ terraintile.py: This file contains the terrain tile used by the Terrain class.
 
 TerrainTile is a custom implementation of Panda3d's GeoMipMap.
 """
-__author__ = "Stephen Lujan"
-__date__ = "$Oct 27, 2010 4:47:05 AM$"
+
 
 from collections import deque
 from config import *
-from pandac.PandaModules import Filename
-from pandac.PandaModules import GeoMipTerrain
-from pandac.PandaModules import NodePath
-from pandac.PandaModules import PNMImage
-from pandac.PandaModules import Texture
-from pandac.PandaModules import TextureStage
-from pandac.PandaModules import BitMask32
-from pandac.PandaModules import Vec3
+from panda3d.core import *
 from pstat_debug import pstat
-from pandac.PandaModules import AsyncTask
-from pandac.PandaModules import AsyncTaskManager
 from direct.task.Task import Task
 #from direct.stdpy import threading2 as threading
 import threading

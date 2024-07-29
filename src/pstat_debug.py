@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -25,7 +25,7 @@ This is the easiest way to profile slow code for Panda3d.
 """
 
 def pstat(func):
-    from pandac.PandaModules import PStatCollector
+    from panda3d.core import PStatCollector
     collectorName = "Debug:%s" % func.__name__
     if hasattr(base, 'custom_collectors'):
         if collectorName in base.custom_collectors.keys():

@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -23,12 +23,10 @@ while the scene is being prepared.
 
 Borrowed some code from Astelix from the Panda3d forum. Thanks Astelix.
 """
-__author__ = "Stephen Lujan"
 
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.interval.IntervalGlobal import *
-from pandac.PandaModules import TransparencyAttrib
-from pandac.PandaModules import Vec4
+from panda3d.core import *
 from config import *
 
 class SplashCard(object):

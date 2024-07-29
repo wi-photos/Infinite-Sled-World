@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -25,12 +25,7 @@ generally responsible for the appearance of the terrain.
 """
 
 from config import *
-from panda3d.core import Shader
-from pandac.PandaModules import TexGenAttrib
-from pandac.PandaModules import Texture
-from pandac.PandaModules import TextureStage
-from pandac.PandaModules import Vec3
-from pandac.PandaModules import Vec4
+from panda3d.core import *
 from fullterrainshadergenerator import *
 from bakedterrainshadergenerator import *
 from terraintexturemap import *

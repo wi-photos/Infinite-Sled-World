@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -21,16 +21,12 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 creature.py: This file contains classes for walking characters on the terrain.
 There are further implementations for ai, and players.
 """
-__author__ = "Stephen Lujan"
 
 import math
 
 from direct.actor.Actor import Actor
 from direct.showbase.DirectObject import DirectObject
-from pandac.PandaModules import NodePath
-from pandac.PandaModules import PandaNode
-from pandac.PandaModules import Vec2
-from pandac.PandaModules import Vec3
+from panda3d.core import *
 import random
 from config import *
 

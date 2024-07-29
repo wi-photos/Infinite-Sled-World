@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -21,11 +21,9 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 terrainshadergenerator.py: This file contains a shader generator
 specific to the terrain in this engine.
 """
-__author__ = "Stephen Lujan"
 
 from config import *
-from panda3d.core import Shader
-from pandac.PandaModules import PTAFloat
+from panda3d.core import *
 from terraintexturemap import *
 
 ###############################################################################

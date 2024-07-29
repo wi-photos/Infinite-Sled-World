@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -24,10 +24,8 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  describe the use of each texture on a TerrainTile. This last feature is an
  alternative to a shader that calculates texture weights in realtime.
 """
-__author__ = "Stephen Lujan"
 
-from pandac.PandaModules import PNMImage
-from pandac.PandaModules import Vec4
+from panda3d.core import *
 from config import *
 
 class TerrainShaderTexture:

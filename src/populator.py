@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -23,9 +23,7 @@ populator.py: This file contains code to populate terrain tiles with objects
 
 from terraintile import *
 from direct.showbase.RandomNumGen import *
-from pandac.PandaModules import TextNode, CardMaker
-from pandac.PandaModules import Vec3,Vec4,Point3,Point2
-from pandac.PandaModules import Shader, Texture, TextureStage, TransparencyAttrib
+from panda3d.core import *
 from config import *
 import random
 

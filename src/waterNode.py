@@ -1,6 +1,6 @@
 """
 This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
-Copyright Stephen Lujan. Used for this project with permission.
+Original File Copyright Stephen Lujan. Used for this project with permission.
 
 
 Zero-Clause BSD
@@ -22,23 +22,8 @@ waterNode.py: This file contains the WaterNode used to render water in the
 terrain. This code is originally based on the WaterNode class from the Yet
 Another Roaming Ralph demo.
 """
-__author__ = "Stephen Lujan"
 
-from panda3d.core import BoundingBox
-from pandac.PandaModules import CardMaker
-from pandac.PandaModules import CullFaceAttrib
-from pandac.PandaModules import Fog
-from pandac.PandaModules import Plane
-from pandac.PandaModules import PlaneNode
-from pandac.PandaModules import Point3
-from pandac.PandaModules import RenderState
-from pandac.PandaModules import Shader
-from pandac.PandaModules import ShaderPool
-from pandac.PandaModules import Texture
-from pandac.PandaModules import TextureStage
-from pandac.PandaModules import TransparencyAttrib
-from pandac.PandaModules import Vec3
-from pandac.PandaModules import Vec4
+from panda3d.core import *
 from config import *
 
 class WaterNode():
