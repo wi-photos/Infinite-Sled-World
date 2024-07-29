@@ -1,0 +1,267 @@
+
+//Cg
+//
+//Cg profile arbvp1 arbfp1
+// Should use per-pixel lighting, hdr1, and medium bloom
+// input alight0, dlight0
+
+const float slopeScale = 60.0;
+//returns [0,1] fog factor
+
+float FogAmount( float density, float3 PositionVS )
+{
+    float z = length( PositionVS ); // viewer position is at origin
+    return saturate( pow(2.7182818, -(density * z)));
+}
+
+float3 absoluteValue(float3 input)
+{
+    return float3(abs(input.x), abs(input.y), abs(input.z));
+}
+
+float calculateWeight( float value, float minimum, float maximum )
+{
+    value = clamp(value, minimum, maximum);
+    float weight = min(maximum - value, value - minimum);
+
+    return weight;
+}
+
+float calculateFinalWeight( float height, float slope, float4 limits )
+{
+    return calculateWeight(height, limits.x, limits.y)
+           * calculateWeight(slope, limits.z, limits.a);
+}
+
+float3 reflectVector( float3 input, float3 normal)
+{
+    return ( -2 * dot(input,normal) * normal + input );
+}
+
+struct vfconn
+{
+    //from terrain shader
+    float2 l_tex_coord : TEXCOORD0;
+    float3 l_normal : TEXCOORD1;
+    float3 l_world_pos : TEXCOORD6;
+    float4 l_color : COLOR;
+
+    //from auto shader
+    float3 l_eye_position : TEXCOORD2;
+    float3 l_eye_normal : TEXCOORD3;
+    float3 l_eyeVec : TEXCOORD4;
+
+    float l_fog : FOG;
+
+};
+
+void vshader(
+        in float2 vtx_texcoord0 : TEXCOORD0,
+        in float4 vtx_position : POSITION,
+        in float4 vtx_normal : NORMAL,
+        in float4 vtx_color : COLOR,
+        uniform float4 mspos_view,
+        uniform float fogDensity: FOGDENSITY,
+        uniform float3 camPos : CAMPOS,
+        uniform float4x4 trans_model_to_world,
+        uniform float4x4 mat_modelproj,
+
+        out vfconn output,
+        out float4 l_position : POSITION
+) {
+        // Transform the current vertex from object space to clip space
+        l_position = mul(mat_modelproj, vtx_position);
+
+        //for terrain
+        output.l_color = vtx_color;
+        output.l_tex_coord = vtx_texcoord0;
+        output.l_world_pos = mul(trans_model_to_world, vtx_position);
+
+        //get world normal for texture selection
+        output.l_normal = vtx_normal.xyz;
+        //flip the x http://www.panda3d.org/forums/viewtopic.php?p=83854
+        output.l_normal.x *= -slopeScale;
+        output.l_normal.y *= slopeScale;
+        output.l_normal = normalize(output.l_normal);
+
+
+        // get fog
+        // there has to be a faster way to get the camera's distance in a shader
+        float3 cam_to_vertex = output.l_world_pos - camPos;
+        output.l_fog = FogAmount(fogDensity.x, cam_to_vertex);
+
+}
+
+void fshader(
+        in vfconn input,
+        uniform float4 alight_alight0,
+        //uniform float4x4 dlight_dlight0_rel_view,
+        uniform float4x4 dlight_dlight0_rel_world,
+        out float4 o_color : COLOR0,
+        uniform float4 attr_color,
+        uniform float4 attr_colorscale,
+
+        //for terrain shader
+        in uniform sampler2D normalMap,
+        in uniform sampler2D displacementMap,
+        in uniform sampler2D detailTex,
+        in uniform float normalMapStrength,
+        in uniform float parallaxStrength,
+        in uniform float detailSmallScale,
+        in uniform float detailBigScale,
+        in uniform float detailHugeScale,
+        in uniform float ambientOcclusion,
+        in uniform float debugDisableDiffuse,
+        in uniform float brightnessAdjust,
+        
+        in uniform float4 fogColor : FOGCOLOR,
+
+            in uniform sampler2D texUnit0,
+                in uniform float4 region0Limits,
+            in uniform sampler2D texUnit1,
+                in uniform float4 region1Limits,
+            in uniform sampler2D texUnit2,
+                in uniform float4 region2Limits,
+                in uniform float4 region3Limits,
+            in uniform sampler2D texUnit3,
+                in uniform float4 region4Limits
+) {
+
+
+        // get detail coordinates
+        float2 detailCoordSmall = input.l_tex_coord * detailSmallScale;
+        float2 detailCoordBig = input.l_tex_coord * detailBigScale;
+        float2 detailCoordHuge = input.l_tex_coord * detailHugeScale;
+        float3 terrainNormal = input.l_normal;
+
+        float4 detailColor = (tex2D(detailTex, detailCoordSmall) * tex2D(detailTex, detailCoordBig) * tex2D(detailTex, detailCoordHuge));
+
+        // normal mapping
+        float3 normalModifier = tex2D(normalMap, detailCoordSmall) + tex2D(normalMap, detailCoordBig) + tex2D(normalMap, detailCoordHuge)/2.0 - 1.25;
+        input.l_normal *= normalModifier.z/normalMapStrength;
+        input.l_normal.x += normalModifier.x;
+        input.l_normal.y += normalModifier.y;
+        input.l_normal = normalize(input.l_normal);
+
+        //set up texture calculations
+        // Fetch all textures.
+        float slope = 1.0 - dot( terrainNormal, vec3(0,0,1));
+        float height = input.l_world_pos.z;
+        float textureWeight = 0.0;
+        float textureWeightTotal = 0.000001;
+        vec4 terrainColor = float4(0.0, 0.0, 0.0, 1.0);
+
+
+
+        //texture0, region 0
+        textureWeight = calculateFinalWeight(height, slope, region0Limits);
+        if (textureWeight)
+        {
+            textureWeightTotal += textureWeight;
+            terrainColor += textureWeight * tex2D(texUnit0, input.l_tex_coord);
+        }
+
+
+        //texture1, region 1
+        textureWeight = calculateFinalWeight(height, slope, region1Limits);
+        if (textureWeight)
+        {
+            textureWeightTotal += textureWeight;
+            terrainColor += textureWeight * tex2D(texUnit1, input.l_tex_coord);
+        }
+
+
+        //texture2, region 2
+        textureWeight = calculateFinalWeight(height, slope, region2Limits);
+        if (textureWeight)
+        {
+            textureWeightTotal += textureWeight;
+            terrainColor += textureWeight * tex2D(texUnit2, input.l_tex_coord);
+        }
+
+
+        //texture2, region 3
+        textureWeight = calculateFinalWeight(height, slope, region3Limits);
+        if (textureWeight)
+        {
+            textureWeightTotal += textureWeight;
+            terrainColor += textureWeight * tex2D(texUnit2, input.l_tex_coord);
+        }
+
+
+        //texture3, region 4
+        textureWeight = calculateFinalWeight(height, slope, region4Limits);
+        if (textureWeight)
+        {
+            textureWeightTotal += textureWeight;
+            terrainColor += textureWeight * tex2D(texUnit3, input.l_tex_coord);
+        }
+
+        // normalize color
+        terrainColor /= textureWeightTotal;
+        attr_color = terrainColor;
+        //attr_color =  float4(1.0,1.0,1.0,1.0); //lighting test
+
+        attr_color = max(attr_color, float4(debugDisableDiffuse,debugDisableDiffuse,debugDisableDiffuse,debugDisableDiffuse));
+
+
+        // Add detail texture
+        attr_color *= brightnessAdjust * detailColor;
+
+        // Begin view-space light calculations
+        float ldist,lattenv,langle;
+        float4 lcolor,lspec,lvec,lpoint,latten,ldir,leye,lhalf;
+        float4 tot_ambient = float4(0,0,0,0);
+        float4 tot_diffuse = float4(0,0,0,0);
+        // Ambient Light 0
+        lcolor = alight_alight0;
+        tot_ambient += lcolor;
+        // Directional Light 0
+        lcolor = dlight_dlight0_rel_world[0];
+        lspec  = dlight_dlight0_rel_world[1];
+        lvec   = dlight_dlight0_rel_world[2];
+        //lvec.xyz = normalize(lvec.xyz);
+        float dlight_angle = saturate(dot(input.l_normal.xyz, lvec.xyz));
+        dlight_angle *= sqrt(dlight_angle);
+
+        lcolor *= dlight_angle;
+
+        tot_diffuse += lcolor;
+        // Begin view-space light summation
+        float4 result = float4(0,0,0,0.5);
+        result += tot_ambient * attr_color;
+        result += tot_diffuse * attr_color;
+        result *= attr_colorscale;
+        if (ambientOcclusion)
+            result *= input.l_color * input.l_color * 1.75;
+        // End view-space light calculations
+
+        //////////DEBUGGING
+        //  Debug view slopes
+        //result.rgb = slope * float3(1.0,1.0,1.0) * 2.0;
+        //  Debug view surface normals
+        //result.rgb = absoluteValue(input.l_normal) * 1.3;
+        //  Debug view eye normals
+        //result.rgb = input.l_eye_normal.xyz * 2.0;
+        //  Debug view Light only
+        //result = tot_diffuse + tot_ambient;
+        //  Debug view DLight only
+        //result = tot_diffuse;
+        //  Debug view terrain as solid color before fog
+        //result = float4(1.0,0,0,0.5);
+        //  Debug view l_eyeVec
+        //result.rgb = input.l_eyeVec + float3 (1.0, 1.0, 1.0);
+        //////////
+
+
+        //hdr0   brightness drop 1 -> 3/4
+        //result.rgb = (result*result*result + result*result + result) / (result*result*result + result*result + result + 1);
+        //hdr1   brightness drop 1 -> 2/3
+        result.rgb = (result*result + result) / (result*result + result + 1.0);
+        //hdr2   brightness drop 1 -> 1/2
+        //result.rgb = (result) / (result + 1);
+
+        result = lerp( fogColor, result, input.l_fog );
+
+        o_color = result * 1.000001;
+}

@@ -1,7 +1,25 @@
 """
+This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
+Copyright Stephen Lujan. Used for this project with permission.
+
+
+Zero-Clause BSD
+=============
+
+Permission to use, copy, modify, and/or distribute this software for
+any purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
+FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
+DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+"""
+"""
 populator.py: This file contains code to populate terrain tiles with objects
 """
-__author__ = "Stephen Lujan"
 
 from terraintile import *
 from direct.showbase.RandomNumGen import *
@@ -9,6 +27,7 @@ from pandac.PandaModules import TextNode, CardMaker
 from pandac.PandaModules import Vec3,Vec4,Point3,Point2
 from pandac.PandaModules import Shader, Texture, TextureStage, TransparencyAttrib
 from config import *
+import random
 
 class LeafModel():
     def __init__(self, name, nrplates, width, height, shaderfile, texturefile, uvlist, jitter=-1):
@@ -18,7 +37,11 @@ class LeafModel():
         self.shaderfile = shaderfile
 
         self.np = NodePath('leaf')
-
+        t2 = loader.loadModel( 'models/tree.egg' )
+        t2.setTwoSided( True )
+        t2.reparentTo(self.np)
+        
+        '''
         self.tex = loader.loadTexture('textures/' + texturefile)
         self.tex.setMinfilter( Texture.FTLinearMipmapLinear )
         self.tex.setMagfilter( Texture.FTLinearMipmapLinear )
@@ -48,13 +71,17 @@ class LeafModel():
             self.jitter = height/width/2
         else:
             self.jitter = jitter
-
+        '''
 copy = NodePath()
 
 tree = LeafModel("Tree 1", 3, 5.0, 5.0, None, 'Bleech.png', None)
-
+#tree = NodePath('leaf')
+#tree = loader.loadModel( 'models/tree.egg' )
 def makeTree():
     np = tree.np.copyTo( copy )
+    np.setH(random.randint(0, 180))
+    np.setScale(random.randint(1, 2))
+    
     #np = self.model.instanceTo( self.grassNP )
     #np = loader.loadModel( 'models/grass.egg' )
     #np.reparentTo(self.grassNP)
@@ -69,6 +96,7 @@ sphere = loader.loadModel("models/sphere")
 def makeSphere():
     np = NodePath()
     sphere.copyTo( np )
+    
     #np = self.model.instanceTo( self.grassNP )
     #np = loader.loadModel( 'models/grass.egg' )
     #np.reparentTo(self.grassNP)
@@ -99,7 +127,9 @@ class TerrainPopulator():
         yOff = tile.yOffset
         tileSize = terrain.tileSize
 
-        seed = terrain.heightMap.getHeight(yOff * -2, xOff * -2)+1 * 2147483647
+      #  seed = terrain.heightMap.getHeight(yOff * -2, xOff * -2)+1 * 2147483647
+        seed = terrain.heightMap.getHeight(yOff, xOff) * 2147483647
+        
         dice = RandomNumGen(seed)
 
         for factory in self.factories:
@@ -116,7 +146,6 @@ class TerrainPopulator():
         tile.statics.flattenStrong()
 
     def addToTile(self, tile, object, x, y):
-
         #logging.info("addToTile")
         test = tile.statics
         object.reparentTo(tile.statics)

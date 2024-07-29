@@ -1,18 +1,35 @@
 """
+This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
+Copyright Stephen Lujan. Used for this project with permission.
+
+
+Zero-Clause BSD
+=============
+
+Permission to use, copy, modify, and/or distribute this software for
+any purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
+FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
+DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+"""
+"""
 populator.py: This file handles all elements of an animated sky, affected by
 the time of day. Additionally it will introduce lighting to the scene,
 updated as appropriate for the skies condition.
 """
-__author__ = "Stephen Lujan"
 
 
-from panda3d.core import PNMImage
+from panda3d.core import *
 from pandac.PandaModules import AmbientLight
 from pandac.PandaModules import Fog
 from pandac.PandaModules import TexGenAttrib
 from pandac.PandaModules import Texture
 from pandac.PandaModules import TextureStage
-from sun import *
 from config import *
 
 class ColoredByTime():
@@ -162,7 +179,6 @@ class Sky():
     def __init__(self, filters):
 
         self.skybox = SkyBox()
-        self.sun = Sun(filters)
         self.clouds = CloudLayer()
         self.fog = DistanceFog()
         #self.addDirectLight()
@@ -172,30 +188,44 @@ class Sky():
         self.nightSkip = True
         self.paused = False
 
-        ambient = Vec4(0.55, 0.65, 1.0, 1) #bright for hdr
+        ambient = Vec4(0.65, 0.75, 1.1, 1) #bright for hdr
         alight = AmbientLight('alight')
         alight.setColor(ambient)
         alnp = render.attachNewNode(alight)
         render.setLight(alnp)
         render.setShaderInput('alight0', alnp)
-
+        self.addDirectLight()
+        
+        
     def addDirectLight(self):
         """Adds just a direct light as an alternative to adding a Sun."""
 
-        direct = Vec4(2.0, 1.9, 1.8, 1) #bright for hdr
+        direct = Vec4(4.0, 3.9, 3.8, 1) #bright for hdr
         #direct = Vec4(0.7, 0.65, 0.6, 1)
         self.dlight = DirectionalLight('dlight')
         self.dlight.setColor(direct)
         dlnp = render.attachNewNode(self.dlight)
+       # dlnp.setHpr(100,30,0)
+       # dlnp.setY(299)
+        dlnp.setHpr(0,0,0)
         render.setLight(dlnp)
         render.setShaderInput('dlight0', dlnp)
-        return dlnp
 
+        # second direct light
+        direct2 = Vec4(2.0, 1.9, 1.8, 1) #bright for hdr
+        #direct2 = Vec4(0.7, 0.65, 0.6, 1)
+        self.dlight2 = DirectionalLight('dlight2')
+        self.dlight2.setColor(direct2)
+        dlnp2 = render.attachNewNode(self.dlight2)
+        # dlnp2.setHpr(100,30,0)
+        # dlnp2.setY(299)
+        dlnp2.setHpr(180,0,0)
+        render.setLight(dlnp2)
+        # render.setShaderInput('dlight0', dlnp2)
     def setTime(self, time):
         self.time = time
         self.skybox.setTime(time)
         self.clouds.setTime(time)
-        self.sun.setTime(time)
         self.fog.setTime(time)
 
     def start(self):
@@ -213,14 +243,14 @@ class Sky():
 
         if self.paused:
             return task.cont
-        if self.nightSkip:
-            if self.time > 1925.0:
-                self.time = 475.0
-        else:
-            if self.time > 2400.0:
-                self.time -= 2400.0
-        timeMultiplier = 2400.0 / self.dayLength
-        self.setTime(self.time + elapsed * timeMultiplier)
+      #  if self.nightSkip:
+       #     if self.time > 1925.0:
+      #          self.time = 475.0
+      #  else:
+      #      if self.time > 2400.0:
+        #        self.time -= 2400.0
+       # timeMultiplier = 2400.0 / self.dayLength
+       # self.setTime(self.time + elapsed * timeMultiplier)
         return task.cont
 
     def toggleNightSkip(self):

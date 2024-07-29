@@ -1,4 +1,23 @@
 """
+This file is adapted from the Panda3D Procedural Terrain Engine project (https://github.com/StephenLujan/Panda-3d-Procedural-Terrain-Engine).
+Copyright Stephen Lujan. Used for this project with permission.
+
+
+Zero-Clause BSD
+=============
+
+Permission to use, copy, modify, and/or distribute this software for
+any purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
+FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
+DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+"""
+"""
 creature.py: This file contains classes for walking characters on the terrain.
 There are further implementations for ai, and players.
 """
@@ -29,16 +48,15 @@ class Walker(NodePath):
         #  movement
         self.acceleration = 25
         self.velocity = Vec3(0, 0, 0)
-        self.maxSpeed = 10
+        self.maxSpeed = 50
         self.speed = 0
         self.maxAngularVelocity = 360
         self.turbo = 1
         self.maxStoppingDistance = self.maxSpeed / self.acceleration * 0.5
 
-        self.body = Actor("models/ralph",
-                          {"run":"models/ralph-run",
-                          "walk":"models/ralph-walk"})
-        self.body.setScale(0.25)
+        self.body = loader.loadModel("models/penguin")
+        self.body.setScale(1)
+        self.body.setZ(0.8)
         self.body.reparentTo(self)
         self.heightFunction = heightFunction
 
@@ -85,6 +103,7 @@ class Walker(NodePath):
         # If Ralph is moving, loop the run animation.
         # If he is standing still, stop the animation.
         # reversed walk animation for backward.
+        '''
         if self.velocity.length > 0:
             if self.isMoving is False:
                 self.body.loop("run")
@@ -94,6 +113,7 @@ class Walker(NodePath):
                 self.body.stop()
                 self.body.pose("walk", 5)
                 self.isMoving = False
+        '''
 
     def move(self, desiredVelocity, desiredHeading, elapsed):
         # save Ralph's initial position so that we can restore it,
@@ -102,7 +122,7 @@ class Walker(NodePath):
         startpos = self.getPos()
 
         self.accelerate(desiredVelocity, elapsed)
-        self.turnBody(desiredHeading, elapsed)
+       # self.turnBody(desiredHeading, elapsed)
         self.setPos(startpos + self.velocity * elapsed * self.turbo)
         self.animate()
         self.setZ(self.heightFunction(self.getX(), self.getY()))
@@ -125,10 +145,10 @@ class Player(Walker):
         if self.controls["forward"] == 1:
             if self.controls["right"] != 0:
                 #direction = 45.0
-                direction = 0.0
+                direction = 45
             elif self.controls["left"] != 0:
                 #direction = 45.0
-                direction = 0.0
+                direction = -45
             elif self.controls["back"] != 0:
                 Walker.move(self, Vec3(0, 0, 0), 0, elapsed)
                 return
