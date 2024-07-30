@@ -28,46 +28,36 @@ This is my Panda 3d Terrain Engine.
 My aim is to create the best possible 100% procedurally generated terrain
 """
 
-__author__ = "Stephen Lujan"
-__date__ = "$Oct 7, 2010 4:10:23 AM$"
-
-
-from basicfunctions import *
-from camera import *
-from config import *
-from creature import *
 import direct.directbase.DirectStart
 from direct.filter.CommonFilters import CommonFilters
 from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
+from panda3d.core import *
+from direct.particles.Particles import *
+from direct.particles.ParticleEffect import ParticleEffect
+from direct.particles.ForceGroup import ForceGroup
 from gui import *
-from pandac.PandaModules import LightRampAttrib
-from pandac.PandaModules import PStatClient
 from sky import *
 from splashCard import *
 from terrain import *
 from waterNode import *
 from mapeditor import *
 from physics import *
-from direct.particles.Particles import *
-from direct.particles.ParticleEffect import ParticleEffect
-from direct.particles.ForceGroup import ForceGroup
-#if __name__ == "__main__":
-logging.info( "Hello World")
-
+from basicfunctions import *
+from camera import *
+from config import *
+from creature import *
 class World(DirectObject):
-
     def __init__(self):
         # set here your favourite background color - this will be used to fade to
-
         bgcolor = (0.2, 0.2, 0.2, 1)
         base.setBackgroundColor(*bgcolor)
         self.splash = SplashCard('textures/loading.png', bgcolor)
         taskMgr.doMethodLater(0.01, self.load, "Load Task")
         self.bug_text = addText(-0.95, "Loading...", True, scale=0.1)
-
+        self.playing = 1
     def load(self, task):
-
+        
         PStatClient.connect()
 
         self.bug_text.setText("loading Display...")
@@ -134,7 +124,7 @@ class World(DirectObject):
         yield Task.cont
         yield Task.cont
 
-        self.physics.setup(self.terrain, self.ralph)
+        self.physics.setup(self.terrain, self.penguin)
 
         taskMgr.add(self.move, "moveTask")
 
@@ -144,7 +134,6 @@ class World(DirectObject):
         self.firstmove = 1
 
         disableMouse()
-
         self.bug_text.setText("")
         #showFrame()
         yield Task.cont
@@ -166,25 +155,7 @@ class World(DirectObject):
     def _loadDisplay(self):
         base.setFrameRateMeter(True)
         #base.win.setClearColor(Vec4(0, 0, 0, 1))
-        # Post the instructions
-        ''' 
-        self.title = addTitle("Animate Dream Terrain Engine")
-        self.inst1 = addText(0.95, "[ESC]: Quit")
-        self.inst2 = addText(0.90, "[mouse wheel]: Camera Zoom")
-        self.inst3 = addText(0.85, "[Y]: Y-axis Mouse Invert")
-        self.inst4 = addText(0.80, "[W]: Run Ralph Forward")
-        self.inst5 = addText(0.75, "[A]: Run Ralph Left")
-        self.inst6 = addText(0.70, "[S]: Run Ralph Backward")
-        self.inst7 = addText(0.65, "[D]: Run Ralph Right")
-        self.inst8 = addText(0.60, "[shift]: Turbo Mode")
-        self.inst9 = addText(0.55, "[R]: Regenerate Terrain")
-        self.inst10 = addText(0.50, "[tab]: Open Shader Controls")
-        self.inst11 = addText(0.45, "[1-8]: Set time to # * 3")
-        self.inst12 = addText(0.40, "[N]: Toggle Night Skipping")
-        self.inst13 = addText(0.35, "[P]: Pause day night cycle")
-        self.inst14 = addText(0.3, "[F11]: Screen Shot")
-        self.inst15 = addText(0.25, "[T]: Special Test")
-        '''
+        # pos, hpr, and time text
         self.loc_text = addText(0.95, "[POS]: ", True)
         self.hpr_text = addText(0.90, "[HPR]: ", True)
         self.time_text = addText(0.85, "[Time]: ", True)
@@ -192,7 +163,6 @@ class World(DirectObject):
     def _loadTerrain(self):
         populator = TerrainPopulator()
         populator.addObject(makeTree, {}, 5)
-
         if SAVED_HEIGHT_MAPS:
             seed = 666
         else:
@@ -209,181 +179,127 @@ class World(DirectObject):
 
     def _loadFilters(self):
         self.terrain.setShaderInput('waterlevel', self._water_level)
-
         # load default shaders
-       # cf = CommonFilters(base.win, base.cam)
+        cf = CommonFilters(base.win, base.cam)
         #bloomSize
-        #cf.setBloom(size='small', desat=0.7, intensity=1.5, mintrigger=0.6, maxtrigger=0.95)
+        cf.setBloom(size='small', desat=0.7, intensity=0.5, mintrigger=0.6, maxtrigger=0.95)
         #hdrtype:
        # render.setAttrib(LightRampAttrib.makeHdr1())
         #perpixel:
         #render.setShaderAuto()
         #base.bufferViewer.toggleEnable()
-
     def _loadSky(self):
         self.sky = Sky(None)
         self.sky.start()
-
     def _loadPlayer(self):
-        # Create the main character, Ralph
-        
-        self.ralph = Player(self.terrain.getElevation, 0, 0)
-        self.focus = self.ralph
+        # Create the main character, penguin
+        self.penguin = Player(self.terrain.getElevation, 0, 0)
+
+        self.focus = self.penguin
         self.terrain.setFocus(self.focus)
         # Accept the control keys for movement
                 
-        self.camera = FollowCamera(self.ralph, self.terrain)
+        self.camera = FollowCamera(self.penguin, self.terrain)
         
         self.mouseInvertY = False
         self.accept("escape", sys.exit)
-      #  self.accept("w", self.ralph.setControl, ["forward", 1])
-        self.accept("a", self.ralph.setControl, ["left", 1])
-        self.accept("arrow_left", self.ralph.setControl, ["left", 1])
-        
-   #     self.accept("s", self.ralph.setControl, ["back", 1])
-        self.accept("d", self.ralph.setControl, ["right", 1])
-        self.accept("arrow_right", self.ralph.setControl, ["right", 1])
-        
-  #      self.accept("shift", self.ralph.setControl, ["turbo", 1])
+        # movement controls
+        self.accept("a", self.penguin.setControl, ["left", 1])
+        self.accept("arrow_left", self.penguin.setControl, ["left", 1])
+        self.accept("d", self.penguin.setControl, ["right", 1])
+        self.accept("arrow_right", self.penguin.setControl, ["right", 1])
+        self.accept("a-up", self.penguin.setControl, ["left", 0])
+        self.accept("arrow_left-up", self.penguin.setControl, ["left", 0])
+        self.accept("d-up", self.penguin.setControl, ["right", 0])
+        self.accept("arrow_right-up", self.penguin.setControl, ["right", 0])
+        # other controls
+  #      self.accept("shift", self.penguin.setControl, ["turbo", 1])
         self.accept("shift", screenShot)
-   #     self.accept("1", self.sky.setTime, [300.0])
-    #    self.accept("2", self.sky.setTime, [600.0])
-     #   self.accept("3", self.sky.setTime, [900.0])
-      #  self.accept("4", self.sky.setTime, [1200.0])
-       # self.accept("5", self.sky.setTime, [1500.0])
-    #    self.accept("6", self.sky.setTime, [1800.0])
-     #   self.accept("7", self.sky.setTime, [2100.0])
-      #  self.accept("8", self.sky.setTime, [0.0])
-       # self.accept("n", self.sky.toggleNightSkip)
-    #    self.accept("p", self.sky.pause)
      #   self.accept("r", self.terrain.initializeHeightMap)
       #  self.accept("l", self.terrain.toggleWireFrame)
        # self.accept("t", self.physics.test) #self.terrain.test)
         #self.accept("e", self.toggleEditor)
-     #   self.accept("w-up", self.ralph.setControl, ["forward", 0])
-        self.accept("a-up", self.ralph.setControl, ["left", 0])
-        self.accept("arrow_left-up", self.ralph.setControl, ["left", 0])
+     #   self.accept("w-up", self.penguin.setControl, ["forward", 0])
+
         
-      #  self.accept("s-up", self.ralph.setControl, ["back", 0])
-        self.accept("d-up", self.ralph.setControl, ["right", 0])
-        self.accept("arrow_right-up", self.ralph.setControl, ["right", 0])
-        
-   #     self.accept("shift-up", self.ralph.setControl, ["turbo", 0])
+   #     self.accept("shift-up", self.penguin.setControl, ["turbo", 0])
         self.accept("wheel_up", self.camera.zoom, [1])
         self.accept("wheel_down", self.camera.zoom, [0])
-
-        # mouse controls
-        self.accept("tab", self.toggleMenu)
-      #  self.mouseLook = True
-        
-       # self.critter1 = Ai(self.terrain.getElevation, 2, 2)
-      #  self.critter1.setSeek(self.ralph)
-        
-     #   self.critter2 = Ai(self.terrain.getElevation, 0, 0)
-    #    self.critter2.maxSpeed = 5.0
-       # self.critter2.setWander(60)
-        # constantly moving forward
-        self.ralph.setControl("forward",1)
+       # self.accept("tab", self.toggleMenu)
+       # continuious forward movement
+        self.penguin.setControl("forward",1)
         # snow VFX
         base.enableParticles()
         self.p = ParticleEffect()
         self.p.loadConfig("snow.ptf")
         self.p.setZ(20)
+        self.p.setScale(0.5)
         self.p.setY(-100)
-        self.p.start(parent = self.ralph, renderParent = render)
+        self.p.start(parent = self.penguin, renderParent = render)
         self.p2 = ParticleEffect()
         self.p2.loadConfig("snow.ptf")
         self.p2.setZ(20)
+        self.p2.setScale(0.5)
         self.p2.setY(-100)
-        self.p2.start(parent = self.ralph, renderParent = render)
+        self.p2.start(parent = self.penguin, renderParent = render)
         self.p4 = ParticleEffect()
         self.p4.loadConfig("snow.ptf")
         self.p4.setZ(20)
+        self.p4.setScale(0.5)
         self.p4.setY(-100)
-        self.p4.start(parent = self.ralph, renderParent = render)
+        self.p4.start(parent = self.penguin, renderParent = render)
+        # collision handling for tree coll
+        self.cTrav = CollisionTraverser()
+        self.queue = CollisionHandlerQueue()
+        # player collision
+        collider_node = CollisionNode("box-coll")  # collision node for the Player
+        coll_box = CollisionBox((-1, -1, 0), (1, 1, 4))  # collision geometry for the Player
+        collider_node.setFromCollideMask(BitMask32.bit(0))
+        collider_node.addSolid(coll_box)
+        collider = self.penguin.attachNewNode(collider_node)
+        self.cTrav.addCollider(collider, self.queue)
+       # collider.show() # shows the debug box
     def _loadPhysics(self):
         self.physics = TerrainPhysics()
-
-    def _loadPointLight(self):
-        self.lightpivot = render.attachNewNode("lightpivot")
-        #self.lightpivot.hprinterval(10, Point3(360, 0, 0)).loop()
-        plight = PointLight('plight')
-        plight.setColor(Vec4(1, 1, 1, 1))
-        plight.setAttenuation(Vec3(0.7, 0.05, 0))
-        plnp = self.lightpivot.attachNewNode(plight)
-        plnp.setPos(10, 0, 0)
-        render.setLight(plnp)
-        
-
-        # create a sphere to denote the light
-        sphere = loader.loadModel("models/sphere")
-        sphere.reparentTo(plnp)
-        render.setShaderInput("plight0", plnp)
-        # dlight
-        dlight = DirectionalLight('dlight')
-        dlight.setColor((0.8, 0.8, 0.5, 1))
-        dlnp = render.attachNewNode(dlight)
-        dlnp.setHpr(0, 0, 0)
-        render.setLight(dlnp)
-        # alight
-        alight = AmbientLight('alight')
-        alight.setColor((1, 0.2, 0.2, 1))
-        alnp = render.attachNewNode(alight)
-    #    render.setLight(alnp)
-    
     def toggleMenu(self):
         ml = toggleMouseLook()
         try: self.shaderControl
         except: logging.info( "No shader control found.")
         else: self.shaderControl.setHidden(ml)
-
     def toggleEditor(self):
         ml = toggleMouseLook()
         self.editor.toggle(not ml)
-
+    def stopPenguin(self,task):
+        self.playing = 0
+        
     def move(self, task):
-        #self.lightpivot.setPos(self.focus.getPos() + Vec3(0, 0, 4))
-       # if not getMouseLook():
-       #     return Task.cont
-
         elapsed = task.time - self.prevtime
-        
-        # use the mouse to look around and set Ralph's direction
-       # md = base.win.getPointer(0)
-    #    deltaX = md.getX() -200
-    #    deltaY = md.getY() -200
-     #   print(deltaX)
-      #  print(deltaY)
-        
-       # if self.mouseInvertY:
-        #    deltaY *= -1
-            
-       # if base.win.movePointer(0, 200, 200):
-            #self.camera.update(deltaX, deltaY)
-            # fixed camera position
-       #     self.camera.update(0, 0)
-            
         self.camera.update(0, 0)   
-        self.ralph.update(elapsed)
-        #self.critter1.update(elapsed)
-       # self.critter2.update(elapsed)
-
-
+        if (self.playing == 1):
+            self.penguin.update(elapsed)
+        
         self.terrain.setShaderInput("camPos", self.camera.camNode.getPos(render))
         self.terrain.setShaderInput("fogColor", self.sky.fog.getColor())
-        #print self.sky.fog.fog.getColor()
-        #self.bug_text.setText('')
+
         # Ralph location output
         self.loc_text.setText('[LOC]: %03.1f, %03.1f,%03.1f ' % \
-                              (self.ralph.getX(), self.ralph.getY(), self.ralph.getZ()))
+                              (self.penguin.getX(), self.penguin.getY(), self.penguin.getZ()))
         # camera heading + pitch output
         self.hpr_text.setText('[HPR]: %03.1f, %03.1f,%03.1f ' % \
                               (self.camera.fulcrum.getH(), self.camera.camNode.getP(), self.camera.camNode.getR()))
-
         self.time_text.setText('[Time]: %02i:%02i' % (self.sky.time / 100, self.sky.time % 100 * 60 / 100))
-
         # Store the task time and continue.
         self.prevtime = task.time
+        self.cTrav.traverse(render)
+        
+        for entry in self.queue.getEntries():
+            print("collision! Add code to handle game end here!")
+            self.penguin.setControl("forward",0)
+            myTask = taskMgr.doMethodLater(5, self.stopPenguin, 'tickTask')
+            print(entry)
+            # inp = into node path
+          #  inp = entry.getIntoNodePath().getPos(self.render)  # returns LPoint3f()
+
         return Task.cont
 
 def launchTerrainDemo():
@@ -391,6 +307,4 @@ def launchTerrainDemo():
     w = World()
     logging.info('calling run()...')
     run()
-
-#if __name__ == "__main__":
 launchTerrainDemo()

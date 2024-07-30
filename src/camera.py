@@ -80,7 +80,7 @@ class FollowCamera(TerrainCamera):
             self.cameraDistance = self.maxDistance
         
     def update(self, x, y):
-        
+
         # alter ralph's yaw by an amount proportionate to deltaX
         self.fulcrum.setH(self.fulcrum.getH() - 0.3 * x)
         # find the new camera pitch and clamp it to a reasonable range

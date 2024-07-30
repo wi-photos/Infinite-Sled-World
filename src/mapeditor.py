@@ -23,13 +23,10 @@ mapeditor.py: This file contains a map editor class for this terrain system
 Adapted some code from here
 http://tolleybot.wordpress.com/2010/10/03/panda3d-simple-mouse-picking/
 """
-__author__ = "Stephen Lujan"
 
 #An event handler test
 from direct.task import Task
-from panda3d.core import Vec3,Vec4,Point3
-from panda3d.core import CollisionRay,CollisionNode,GeomNode,CollisionTraverser
-from panda3d.core import CollisionHandlerQueue, CollisionSphere, BitMask32
+from panda3d.core import *
 from terrain import *
 
 class MapEditor():
