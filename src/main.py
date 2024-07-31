@@ -55,6 +55,7 @@ class World(DirectObject):
         taskMgr.doMethodLater(0.01, self.load, "Load Task")
         self.bug_text = addText(-0.95, "Loading...", True, scale=0.1)
         self.playing = 1
+        self.score = 0
     def load(self, task):
         
         PStatClient.connect()
@@ -155,9 +156,9 @@ class World(DirectObject):
         base.setFrameRateMeter(True)
         #base.win.setClearColor(Vec4(0, 0, 0, 1))
         # pos, hpr, and time text
-        self.loc_text = addText(0.95, "[POS]: ", True)
-        self.hpr_text = addText(0.90, "[HPR]: ", True)
-        self.time_text = addText(0.85, "[Time]: ", True)
+        self.loc_text = addText(0.95, "Score: ", True)
+      #  self.hpr_text = addText(0.90, "[HPR]: ", True)
+       # self.time_text = addText(0.85, "[Time]: ", True)
 
     def _loadTerrain(self):
         populator = TerrainPopulator()
@@ -280,14 +281,16 @@ class World(DirectObject):
         
         self.terrain.setShaderInput("camPos", self.camera.camNode.getPos(render))
         self.terrain.setShaderInput("fogColor", self.sky.fog.getColor())
-
+        self.score = int(self.penguin.getY() * -1)
+        print(self.score)
         # Ralph location output
-        self.loc_text.setText('[LOC]: %03.1f, %03.1f,%03.1f ' % \
-                              (self.penguin.getX(), self.penguin.getY(), self.penguin.getZ()))
+    #    self.loc_text.setText('[LOC]: %03.1f, %03.1f,%03.1f ' % \
+                       #       (self.penguin.getX(), self.penguin.getY(), self.penguin.getZ()))
+        self.loc_text.setText('Score: ' + str(self.score))
         # camera heading + pitch output
-        self.hpr_text.setText('[HPR]: %03.1f, %03.1f,%03.1f ' % \
-                              (self.camera.fulcrum.getH(), self.camera.camNode.getP(), self.camera.camNode.getR()))
-        self.time_text.setText('[Time]: %02i:%02i' % (self.sky.time / 100, self.sky.time % 100 * 60 / 100))
+       # self.hpr_text.setText('[HPR]: %03.1f, %03.1f,%03.1f ' % \
+                #              (self.camera.fulcrum.getH(), self.camera.camNode.getP(), self.camera.camNode.getR()))
+        #self.time_text.setText('[Time]: %02i:%02i' % (self.sky.time / 100, self.sky.time % 100 * 60 / 100))
         # Store the task time and continue.
         self.prevtime = task.time
         self.cTrav.traverse(render)
