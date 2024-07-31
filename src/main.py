@@ -36,7 +36,6 @@ from panda3d.core import *
 from direct.particles.Particles import *
 from direct.particles.ParticleEffect import ParticleEffect
 from direct.particles.ForceGroup import ForceGroup
-from gui import *
 from sky import *
 from splashCard import *
 from terrain import *
@@ -101,11 +100,11 @@ class World(DirectObject):
         yield Task.cont
         self._loadPlayer()
         
-        self.bug_text.setText("loading water...")
+     #   self.bug_text.setText("loading water...")
         #showFrame()
-        yield Task.cont
-        yield Task.cont
-        self._loadWater()
+    #    yield Task.cont
+       # yield Task.cont
+      #  self._loadWater()
 
         self.bug_text.setText("loading filters...")
         #showFrame()
@@ -113,11 +112,11 @@ class World(DirectObject):
         yield Task.cont
         self._loadFilters()
         
-        self.bug_text.setText("loading gui controls...")
+   #     self.bug_text.setText("loading gui controls...")
         #showFrame()
-        yield Task.cont
-        yield Task.cont
-        self._loadGui()
+    #    yield Task.cont
+     #   yield Task.cont
+      #  self._loadGui()
 
         self.bug_text.setText("loading miscellanious...")
         #showFrame()
@@ -143,14 +142,14 @@ class World(DirectObject):
 
         yield Task.done
         
-    def _loadGui(self):
-        try: 
-            self.terrain.texturer.shader
-        except: 
-            logging.info( "Terrain texturer has no shader to control.")
-        else:
-            self.shaderControl = TerrainShaderControl(-0.4, -0.1, self.terrain)
-            self.shaderControl.hide()     
+ #   def _loadGui(self):
+  #      try: 
+   #         self.terrain.texturer.shader
+    #    except: 
+     #       logging.info( "Terrain texturer has no shader to control.")
+      #  else:
+       #     self.shaderControl = TerrainShaderControl(-0.4, -0.1, self.terrain)
+        #    self.shaderControl.hide()     
 
     def _loadDisplay(self):
         base.setFrameRateMeter(True)
@@ -174,11 +173,12 @@ class World(DirectObject):
 
     def _loadWater(self):
         self._water_level = self.terrain.maxHeight * self.terrain.waterHeight
+        
         size = self.terrain.maxViewRange * 1.5
      #   self.water = WaterNode(self, -size, -size, size, size, self._water_level)
 
     def _loadFilters(self):
-        self.terrain.setShaderInput('waterlevel', self._water_level)
+     #   self.terrain.setShaderInput('waterlevel', self._water_level)
         # load default shaders
         cf = CommonFilters(base.win, base.cam)
         #bloomSize
