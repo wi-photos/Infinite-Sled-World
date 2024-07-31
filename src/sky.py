@@ -188,7 +188,7 @@ class Sky():
         alight.setColor(ambient)
         alnp = render.attachNewNode(alight)
         render.setLight(alnp)
-        render.setShaderInput('alight0', alnp)
+     #   render.setShaderInput('alight0', alnp)
         self.addDirectLight()
         
         
@@ -204,7 +204,7 @@ class Sky():
        # dlnp.setY(299)
         dlnp.setHpr(0,0,0)
         render.setLight(dlnp)
-        render.setShaderInput('dlight0', dlnp)
+      #  render.setShaderInput('dlight0', dlnp)
 
         # second direct light
         direct2 = Vec4(2.0, 1.9, 1.8, 1) #bright for hdr

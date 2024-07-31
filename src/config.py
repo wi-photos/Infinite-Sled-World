@@ -88,7 +88,6 @@ SAVED_HEIGHT_MAPS = getConfigBool("save-height-maps", False)
 SAVED_SLOPE_MAPS = getConfigBool("save-slope-maps", False)
 SAVED_TEXTURE_MAPS = getConfigBool("save-texture-maps", False)
 SAVED_VEGETATION_MAPS = getConfigBool("save-vegetation-maps", False)
-TERR_SHADERS_OFF = getConfigBool("terr-shaders-off", True)
 
 THREAD_LOAD_TERRAIN = getConfigBool("thread-load-terrain", False)
 BRUTE_FORCE_TILES = getConfigBool("brute-force-tiles", True)

@@ -1,5 +1,4 @@
 max-terrain-height 60
-terr-shaders-off #t
 default-fov 60
 
 # Camera clipping distance

@@ -179,7 +179,6 @@ class World(DirectObject):
      #   self.water = WaterNode(self, -size, -size, size, size, self._water_level)
 
     def _loadFilters(self):
-     #   self.terrain.setShaderInput('waterlevel', self._water_level)
         # load default shaders
         cf = CommonFilters(base.win, base.cam)
         #bloomSize
@@ -278,9 +277,6 @@ class World(DirectObject):
         self.camera.update(0, 0)   
         if (self.playing == 1):
             self.penguin.update(elapsed)
-        
-        self.terrain.setShaderInput("camPos", self.camera.camNode.getPos(render))
-        self.terrain.setShaderInput("fogColor", self.sky.fog.getColor())
         self.score = int(self.penguin.getY() * -1)
         print(self.score)
         # Ralph location output

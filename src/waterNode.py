@@ -39,11 +39,11 @@ class WaterNode():
         self.waterNP.setHpr(0, -90, 0)
         self.waterNP.setPos(0, 0, z)
         self.waterNP.setTransparency(TransparencyAttrib.MAlpha)
-        self.waterNP.setShader(loader.loadShader('shaders/water.sha'))
-        self.waterNP.setShaderInput('wateranim', Vec4(0.03, -0.015, 64.0, 0)) # vx, vy, scale, skip
+    #    self.waterNP.setShader(loader.loadShader('shaders/water.sha'))
+    #    self.waterNP.setShaderInput('wateranim', Vec4(0.03, -0.015, 64.0, 0)) # vx, vy, scale, skip
         # offset, strength, refraction factor (0=perfect mirror, 1=total refraction), refractivity
-        self.waterNP.setShaderInput('waterdistort', Vec4(0.4, 4.0, 0.25, 0.45))
-        self.waterNP.setShaderInput('time', 0)
+     #   self.waterNP.setShaderInput('waterdistort', Vec4(0.4, 4.0, 0.25, 0.45))
+      #  self.waterNP.setShaderInput('time', 0)
 
         # Reflection plane
         self.waterPlane = Plane(Vec3(0, 0, z + 1), Point3(0, 0, z))

@@ -18,7 +18,7 @@ AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 """
 """
-terraintexturer.py: This file contains the TerrainTextur class.
+terraintexturer.py: This file contains the TerrainTexturer class.
 
 The TerrainTexturer handles all textures and or shaders on the terrain and is
 generally responsible for the appearance of the terrain.
@@ -26,8 +26,6 @@ generally responsible for the appearance of the terrain.
 
 from config import *
 from panda3d.core import *
-from fullterrainshadergenerator import *
-from bakedterrainshadergenerator import *
 from terraintexturemap import *
 
 ###############################################################################
@@ -175,99 +173,17 @@ class ShaderTexturer(TerrainTexturer):
         """Textures based on altitude and slope."""
 
         logging.info( "loading textures...")
-
-        if TERR_SHADERS_OFF:
-            print("Terrain Shaders are Off!")
-            tex = loader.loadTexture('textures/Material_albedo000.png')
-            ts = TextureStage('ts')
-            self.terrain.setTexScale(ts, 2)
-            tex.setWrapU(Texture.WMMirror)
-            tex.setWrapV(Texture.WMMirror)
-            self.terrain.setTexture(ts, tex)
-        else:
-            print("Terrain Shaders are On!")
-            ### texture scaling
-            texScale = self.terrain.tileSize / 32 * self.terrain.horizontalScale
-            self.texScale = Vec4(texScale, texScale, texScale, 1.0)
-
-            ### Load textures
-            self.normalMap = self.loadTexture("Detail_NRM.png")
-            self.displacementMap = self.loadTexture("Detail_DISP.png")
-            self.testOn = False
-            self.detailTex = self.loadTexture("Detail_COLOR.png")
-            self.detailTex2 = self.loadTexture("Detail_COLOR2.png")
-            self.tex1 = self.loadTexture("dirt.jpg")
-            self.tex2 = self.loadTexture("grass.jpg")
-            self.tex3 = self.loadTexture("rock.jpg")
-            self.tex4 = self.loadTexture("snow.jpg")
-
-            self.normalTS = TextureStage('normalMap')
-            #self.normalTS2 = TextureStage('normalMap2')
-            self.detailTS = TextureStage('detailMap')
-            self.ts1 = TextureStage('textures')
-
-            ### Load the boundries for each texture
-            # regionLimits ( min height, max height, min slope, max slope )
-
-            self.textureMapper = TextureMapper(self.terrain)
-
-            self.textureMapper.addTexture(self.tex1)
-            self.textureMapper.addRegionToTex(Vec4(-9999.0, self.indexToHeight(0.1), -0.001, 1.001))
-
-            self.textureMapper.addTexture(self.tex2)
-            self.textureMapper.addRegionToTex(Vec4(self.indexToHeight(-0.15), self.indexToHeight(0.75), -0.001, 0.30))
-
-            self.textureMapper.addTexture(self.tex3)
-            self.textureMapper.addRegionToTex(Vec4(self.indexToHeight(0.1), self.indexToHeight(0.95), 0.10, 1.001))
-            #second region forces tex 2 and 4 to blend a bit at their boundries regardless of slope
-            self.textureMapper.addRegionToTex(Vec4(self.indexToHeight(0.4), self.indexToHeight(0.9), -0.001, 1.001))
-
-            self.textureMapper.addTexture(self.tex4)
-            self.textureMapper.addRegionToTex(Vec4(self.indexToHeight(0.72), 9999.0, -0.001, 1.001))
-
-            logging.info( "intializing terrain shader generator...")
-            file = 'shaders/terrain.sha'
-            if SAVED_TEXTURE_MAPS:
-                self.shaderGenerator = BakedTerrainShaderGenerator(self.terrain, self, self.textureMapper)
-                file = 'shaders/bakedTerrain.sha'
-                print("loading baked")
-            else:
-                self.shaderGenerator = FullTerrainShaderGenerator(self.terrain, self,  self.textureMapper)
-                file = 'shaders/fullTerrain.sha'
-            logging.info( "terrain shader generator initialized...")
-
-            if RUNTYPE == 'python':
-                self.shaderGenerator.saveShader(file)
-                self.shader = Shader.load(file, Shader.SLCg)
-            else:
-                self.shader = Shader.make(self.shaderGenerator.createShader(), Shader.SLCg);
-
-            self.terrain.setShaderInput("normalMap", self.normalMap)
-            self.terrain.setShaderInput("displacementMap", self.displacementMap)
-            self.terrain.setShaderInput("detailTex", self.detailTex)
-            self.terrain.setShaderInput('tscale', self.texScale)
-            self.terrain.setShaderInput("fogColor", Vec4(1.0, 1.0, 1.0, 1.0))
-            self.terrain.setShaderInput("camPos", base.camera.getPos())
-
+        tex = loader.loadTexture('textures/Material_albedo000.png')
+        ts = TextureStage('ts')
+        self.terrain.setTexScale(ts, 2)
+        tex.setWrapU(Texture.WMMirror)
+        tex.setWrapV(Texture.WMMirror)
+        self.terrain.setTexture(ts, tex)
+        
     
     def apply(self, input):
         """Apply textures and shaders to the input."""
-        if TERR_SHADERS_OFF == False:
-            ### apply textures
-            #input.setTexture(self.ts1, self.tex1)
-           # input.setTexture(self.ts1, self.tex2)
-          #  input.setTexture(self.ts1, self.tex3)
-          #  input.setTexture(self.ts1, self.tex4)
-           # input.setTexture(self.detailTS, self.detailTex)
-          #  input.setTexScale(self.detailTS, 10, 10)
-
-            ### apply shader
-          #  input.setShaderInput("normalMap", self.normalMap)
-          #  input.setShaderInput("detailTex", self.detailTex)
-          #  input.setShaderInput('tscale', self.texScale)
-          #  input.setShaderInput("fogColor", Vec4(1.0,1.0,1.0,1.0))
-          #  input.setShaderInput("camPos", base.camera.getPos())
-            input.setShader(self.shader)
+        print("applying")
 
 
     def test(self):

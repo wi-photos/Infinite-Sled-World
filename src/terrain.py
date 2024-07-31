@@ -322,7 +322,7 @@ class Terrain(NodePath):
         """
 
         self.pointLight = vec3(0, 5, 0)#self.focus.getPos() + vec3(0,5,0)
-        self.setShaderInput("LightPosition", self.pointLight)
+       # self.setShaderInput("LightPosition", self.pointLight)
 
     def updateTiles(self):
         """This task updates each tile, which updates the LOD.
@@ -652,7 +652,7 @@ class Terrain(NodePath):
 
     def setShaderFloatInput(self, name, input):
         logging.info("set shader input " + name + " to " + str(input))
-        self.setShaderInput(name, PTAFloat([input]))
+       # self.setShaderInput(name, PTAFloat([input]))
 
     def setFocus(self, nodePath):
         self.focus = nodePath
