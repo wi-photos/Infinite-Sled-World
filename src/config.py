@@ -33,7 +33,7 @@ logging.debug('debug messages working')
 logging.basicConfig(level=logging.ERROR,
                     format='*(%(threadName)-10s) %(filename)s:%(lineno)-4d %(message)s',)
 
-loadPrcFile("config/config.prc")
+#loadPrcFile("config/config.prc")
 # Figure out what directory this program is in.
 MYDIR = os.path.abspath(sys.path[0])
 MYDIR = Filename.fromOsSpecific(MYDIR).getFullpath()

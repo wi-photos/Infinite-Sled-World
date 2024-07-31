@@ -27,6 +27,25 @@ The panda3d roaming ralph demo, Gsk, Merlinson
 This is my Panda 3d Terrain Engine.
 My aim is to create the best possible 100% procedurally generated terrain
 """
+from panda3d.core import loadPrcFileData
+
+loadPrcFileData('', 'max-terrain-height 120')
+loadPrcFileData('', 'default-fov 60')
+loadPrcFileData('', 'default-far 10000')
+loadPrcFileData('', 'default-near 0.01')
+loadPrcFileData('', 'allow-portal-cull 1')
+loadPrcFileData('', 'sync-video #t')
+loadPrcFileData('', 'terrain-horizontal-stretch 1.0')
+loadPrcFileData('', 'save-height-maps #f')
+loadPrcFileData('', 'save-slope-maps #f')
+loadPrcFileData('', 'save-texture-maps #f')
+loadPrcFileData('', 'save-vegetation-maps #f')
+loadPrcFileData('', 'thread-load-terrain #f')
+loadPrcFileData('', 'brute-force-tiles #t')
+loadPrcFileData('', 'multisamples 1')
+loadPrcFileData('', 'textures-power-2 up')
+loadPrcFileData('', 'textures-auto-power-2 #t')
+loadPrcFileData('', 'threading-model Cull/Draw')
 
 import direct.directbase.DirectStart
 from direct.filter.CommonFilters import CommonFilters
@@ -267,7 +286,7 @@ class World(DirectObject):
         if (self.playing == 1):
             self.penguin.update(elapsed)
         self.score = int(self.penguin.getY() * -1)
-        print(self.score)
+       # print(self.score)
         # Ralph location output
     #    self.loc_text.setText('[LOC]: %03.1f, %03.1f,%03.1f ' % \
                        #       (self.penguin.getX(), self.penguin.getY(), self.penguin.getZ()))
