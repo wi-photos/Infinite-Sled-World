@@ -58,6 +58,7 @@ from direct.particles.ParticleEffect import ParticleEffect
 from direct.particles.ForceGroup import ForceGroup
 from sky import *
 from splashCard import *
+from direct.gui.DirectGui import *
 from terrain import *
 from mapeditor import *
 from physics import *
@@ -75,8 +76,12 @@ class World(DirectObject):
         self.bug_text = addText(-0.95, "Loading...", True, scale=0.1)
         self.playing = 1
         self.score = 0
-    def load(self, task):
+        self.temporarygui = NodePath('temporary')
+        self.temporarygui.reparentTo(aspect2d)
         
+    def load(self, task):
+        self.playing = 1
+        self.score = 0
         PStatClient.connect()
 
         self.bug_text.setText("loading Display...")
@@ -153,7 +158,7 @@ class World(DirectObject):
         yield Task.cont
         self.splash.destroy()
         self.splash = None
-
+        
         yield Task.done
         
  #   def _loadGui(self):
@@ -278,9 +283,19 @@ class World(DirectObject):
     def toggleEditor(self):
         ml = toggleMouseLook()
         self.editor.toggle(not ml)
+    def playAgain(self):
+        for node in self.temporarygui.getChildren():
+            node.removeNode()
+        self.penguin.setPos(0,0,100)
+        self.playing = 1
+        self.penguin.setControl("forward",1)
+        
     def stopPenguin(self,task):
         self.playing = 0
-        
+        OnscreenText(text="Game Over",pos=(0,0), scale=0.3,fg=(1, 1, 1, 1), parent=self.temporarygui) 
+        DirectButton(image = "textures/playagain.png", scale=(0.5,0.5,0.15), relief = None, command=self.playAgain, pos=(0, 0, -0.8), parent=self.temporarygui)
+        aspect2d.setTransparency(TransparencyAttrib.MAlpha)
+
     def move(self, task):
         elapsed = task.time - self.prevtime
         self.camera.update(0, 0)   
