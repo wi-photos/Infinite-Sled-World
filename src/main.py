@@ -39,7 +39,6 @@ from direct.particles.ForceGroup import ForceGroup
 from sky import *
 from splashCard import *
 from terrain import *
-from waterNode import *
 from mapeditor import *
 from physics import *
 from basicfunctions import *
@@ -100,12 +99,6 @@ class World(DirectObject):
         yield Task.cont
         yield Task.cont
         self._loadPlayer()
-        
-     #   self.bug_text.setText("loading water...")
-        #showFrame()
-    #    yield Task.cont
-       # yield Task.cont
-      #  self._loadWater()
 
         self.bug_text.setText("loading filters...")
         #showFrame()
@@ -172,11 +165,7 @@ class World(DirectObject):
         self.editor = MapEditor(self.terrain)
        # self.terrain.setZ(10)
 
-    def _loadWater(self):
-        self._water_level = self.terrain.maxHeight * self.terrain.waterHeight
-        
-        size = self.terrain.maxViewRange * 1.5
-     #   self.water = WaterNode(self, -size, -size, size, size, self._water_level)
+
 
     def _loadFilters(self):
         # load default shaders

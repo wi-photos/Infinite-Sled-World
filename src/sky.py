@@ -57,7 +57,6 @@ class SkyBox(ColoredByTime):
         self.skybox.setTextureOff(1)
         self.skybox.setShaderOff(1)
         self.skybox.setTwoSided(True)
-        # make big enough to cover whole terrain, else there'll be problems with the water reflections
         self.skybox.setScale(1.5* MAX_VIEW_RANGE)
         self.skybox.setBin('background', 1)
         self.skybox.setDepthWrite(False)
