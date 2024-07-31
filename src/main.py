@@ -42,10 +42,11 @@ loadPrcFileData('', 'save-texture-maps #f')
 loadPrcFileData('', 'save-vegetation-maps #f')
 loadPrcFileData('', 'thread-load-terrain #f')
 loadPrcFileData('', 'brute-force-tiles #t')
-loadPrcFileData('', 'multisamples 1')
+#loadPrcFileData('', 'multisamples 1')
 loadPrcFileData('', 'textures-power-2 up')
 loadPrcFileData('', 'textures-auto-power-2 #t')
-loadPrcFileData('', 'threading-model Cull/Draw')
+
+#loadPrcFileData('', 'threading-model Cull/Draw')
 
 import direct.directbase.DirectStart
 from direct.filter.CommonFilters import CommonFilters

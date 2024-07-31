@@ -238,8 +238,8 @@ class LodTerrainTile(TerrainTile):
         """Builds a Tile for the terrain at input coordinates."""
 
         TerrainTile.__init__(self, terrain, x, y)
-        self.detail = 3
-        self.setMinLevel(3)
+        self.detail = 2
+        self.setMinLevel(2)
 
     def make(self):
         TerrainTile.make(self)

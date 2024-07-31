@@ -368,7 +368,11 @@ class Terrain(NodePath):
         lowOuter *= lowOuter
         horizonInner = self.minTileDistance * 0.5 + self.tileSize + halfTile
         horizonInner *= horizonInner
-
+        # Hacky lod code that sets all tiles at detail level 2
+        for pos, tile in self.tiles.items():
+        
+            tile.setDetail(2)
+        '''
         for pos, tile in self.tiles.items():
             deltaX = focusx - (pos[0] + halfTile)
             deltaY = focusy - (pos[1] + halfTile)
@@ -383,6 +387,7 @@ class Terrain(NodePath):
                     tile.setDetail(2)
             elif distance > horizonInner:
                 tile.setDetail(3)
+        '''
 
     def buildDetailLevels(self):
         """Unused."""
