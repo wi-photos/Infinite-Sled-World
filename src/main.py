@@ -74,9 +74,9 @@ class World(DirectObject):
         self.score = 0
         base.setBackgroundColor(0, 0, 0)
         self.mainFrame = DirectFrame(frameColor=(0, 0, 0, 1), frameSize=(-2, 2, -2, 2), pos=(0, 0, 0),parent=self.temporarygui)
-     #   self.background = OnscreenImage(image = "images/bg.jpg", pos = (0, 0, 0), scale = (1.5, 1, 1))
-      #  self.background.setTransparency(TransparencyAttrib.MAlpha)
-       # self.background.reparentTo(self.mainFrame)
+        self.background = OnscreenImage(image = "textures/bg.jpg", pos = (0, 0, 0), scale = (1.5, 1, 1))
+        self.background.setTransparency(TransparencyAttrib.MAlpha)
+        self.background.reparentTo(self.mainFrame)
         self.title = OnscreenText(text="Infinite Sled World",pos=(0,0.8), scale=0.2,fg=(1, 1, 1, 1),parent=self.temporarygui)
         self.startButton = DirectButton(image = "textures/play.png", scale=(0.5,0.5,0.15), relief = None, command=self.loadGame, pos=(0, 0, -0.8),parent=self.temporarygui)
         self.startButton.setTransparency(TransparencyAttrib.MAlpha)

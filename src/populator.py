@@ -27,29 +27,82 @@ from panda3d.core import *
 from config import *
 import random
 
-class LeafModel():
+class TreeModel():
     def __init__(self):
-        #print name, nrplates, width, height, shaderfile, texturefile, uvlist, jitter
-      #  self.name = name
-       # self.texturefile = texturefile
-    #    self.shaderfile = shaderfile
-
         self.np = NodePath('tree')
         t2 = loader.loadModel( 'models/tree.egg' )
         t2.setTwoSided( True )
         t2.reparentTo(self.np)
 copy = NodePath()
-
-tree = LeafModel()
+class RockModel():
+    def __init__(self):
+        self.np = NodePath('tree')
+        t2 = loader.loadModel( 'models/rock.egg' )
+        #t2.setTwoSided( True )
+        t2.reparentTo(self.np)
+copy = NodePath()
+class LogModel():
+    def __init__(self):
+        self.np = NodePath('tree')
+        t2 = loader.loadModel( 'models/log.egg' )
+       # t2.setTwoSided( True )
+        t2.reparentTo(self.np)
+        t2.setH(-90)
+copy = NodePath()
+tree = TreeModel()
+log = LogModel()
+rock = RockModel()
 
 def makeTree():
-    np = tree.np.copyTo( copy )
-    np.setH(random.randint(0, 180))
-    np.setScale(random.randint(1, 2))
-    cs = CollisionSphere(0, 0, 0, 1)
-    cnodePath = np.attachNewNode(CollisionNode('cnode'))
-    cnodePath.node().addSolid(cs)
-    #cnodePath.show()
+    option = int(random.uniform(1, 6))
+    if option == 1:
+        np = tree.np.copyTo( copy )
+        np.setH(random.randint(0, 180))
+        cs = CollisionSphere(0, 0, 0, 1)
+        cnodePath = np.attachNewNode(CollisionNode('cnode'))
+        cnodePath.node().addSolid(cs)
+      #  cnodePath.show()
+        np.setScale(random.randint(1, 4))
+    if option == 2:
+        np = tree.np.copyTo( copy )
+        np.setH(random.randint(0, 180))
+        cs = CollisionSphere(0, 0, 0, 1)
+        cnodePath = np.attachNewNode(CollisionNode('cnode'))
+        cnodePath.node().addSolid(cs)
+       # cnodePath.show()
+        np.setScale(random.randint(1, 2))
+    if option == 3:
+        np = tree.np.copyTo( copy )
+        np.setH(random.randint(0, 180))
+        cs = CollisionSphere(0, 0, 0, 1)
+        cnodePath = np.attachNewNode(CollisionNode('cnode'))
+        cnodePath.node().addSolid(cs)
+     #   cnodePath.show()
+        np.setScale(random.randint(1, 4))
+    if option == 4:
+        np = rock.np.copyTo( copy )
+        np.setH(random.randint(0, 180))
+        cs = CollisionSphere(0, 0, 0, 2)
+        cnodePath = np.attachNewNode(CollisionNode('cnode'))
+        cnodePath.node().addSolid(cs)
+       # cnodePath.show()
+        np.setScale(random.randint(1, 2))
+    if option == 5:
+        np = log.np.copyTo( copy )
+        np.setScale(random.randint(1, 2))
+        cs = CollisionBox(0, 8, 0.5, 10.5)
+        cnodePath = np.attachNewNode(CollisionNode('cnode'))
+        cnodePath.node().addSolid(cs)
+        # cnodePath.show()
+    if option == 6:
+        np = tree.np.copyTo( copy )
+        np.setH(random.randint(0, 180))
+        cs = CollisionSphere(0, 0, 0, 1)
+        cnodePath = np.attachNewNode(CollisionNode('cnode'))
+        cnodePath.node().addSolid(cs)
+      #  cnodePath.show()
+        np.setScale(random.randint(1, 2))
+    
     return np
 
 sphere = loader.loadModel("models/sphere")
