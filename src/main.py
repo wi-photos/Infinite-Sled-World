@@ -60,7 +60,6 @@ from sky import *
 from splashCard import *
 from direct.gui.DirectGui import *
 from terrain import *
-from mapeditor import *
 from physics import *
 from basicfunctions import *
 from camera import *
@@ -68,17 +67,42 @@ from config import *
 from creature import *
 class World(DirectObject):
     def __init__(self):
+        print("hi")
+        self.temporarygui = NodePath('temporary')
+        self.temporarygui.reparentTo(aspect2d)
+        self.playing = 1
+        self.score = 0
+        base.setBackgroundColor(0, 0, 0)
+        self.mainFrame = DirectFrame(frameColor=(0, 0, 0, 1), frameSize=(-2, 2, -2, 2), pos=(0, 0, 0),parent=self.temporarygui)
+     #   self.background = OnscreenImage(image = "images/bg.jpg", pos = (0, 0, 0), scale = (1.5, 1, 1))
+      #  self.background.setTransparency(TransparencyAttrib.MAlpha)
+       # self.background.reparentTo(self.mainFrame)
+        self.title = OnscreenText(text="Infinite Sled World",pos=(0,0.8), scale=0.2,fg=(1, 1, 1, 1),parent=self.temporarygui)
+        self.startButton = DirectButton(image = "textures/play.png", scale=(0.5,0.5,0.15), relief = None, command=self.loadGame, pos=(0, 0, -0.8),parent=self.temporarygui)
+        self.startButton.setTransparency(TransparencyAttrib.MAlpha)
+        self.creditsButton = DirectButton(image = "textures/credits.png", scale=(0.3,0.3,0.08),relief = None,  command=self._loadDisplay, pos=(-1, 0, -0.85),parent=self.temporarygui)
+        self.creditsButton.setTransparency(TransparencyAttrib.MAlpha)
+        self.gameInstructions1 = DirectLabel(text="It's an infinite sledding game!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.5),parent=self.temporarygui)
+        self.gameInstructions2 = DirectLabel(text="The goal is simple!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.3),parent=self.temporarygui)
+        self.gameInstructions3 = DirectLabel(text="Avoid obstacles!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.1),parent=self.temporarygui)
+        self.gameInstructions4 = DirectLabel(text="Sled far!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.1),parent=self.temporarygui)
+        self.gameInstructions5 = DirectLabel(text="Use arrow keys to move! Or A and D keys!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.3),parent=self.temporarygui)
+
+     #   self.mySound = loader.loadSfx("music/happy-loop.ogg")
+      #  self.mySound.setLoop(True)
+       # self.mySound.setLoopCount(0)
+        #self.mySound.play()
+    def loadGame(self):
         # set here your favourite background color - this will be used to fade to
+        for node in self.temporarygui.getChildren():
+            node.removeNode()
         bgcolor = (0.2, 0.2, 0.2, 1)
         base.setBackgroundColor(*bgcolor)
         self.splash = SplashCard('textures/loading.png', bgcolor)
         taskMgr.doMethodLater(0.01, self.load, "Load Task")
         self.bug_text = addText(-0.95, "Loading...", True, scale=0.1)
-        self.playing = 1
-        self.score = 0
-        self.temporarygui = NodePath('temporary')
-        self.temporarygui.reparentTo(aspect2d)
-        
+
+
     def load(self, task):
         self.playing = 1
         self.score = 0
@@ -130,12 +154,6 @@ class World(DirectObject):
         yield Task.cont
         yield Task.cont
         self._loadFilters()
-        
-   #     self.bug_text.setText("loading gui controls...")
-        #showFrame()
-    #    yield Task.cont
-     #   yield Task.cont
-      #  self._loadGui()
 
         self.bug_text.setText("loading miscellanious...")
         #showFrame()
@@ -161,22 +179,10 @@ class World(DirectObject):
         
         yield Task.done
         
- #   def _loadGui(self):
-  #      try: 
-   #         self.terrain.texturer.shader
-    #    except: 
-     #       logging.info( "Terrain texturer has no shader to control.")
-      #  else:
-       #     self.shaderControl = TerrainShaderControl(-0.4, -0.1, self.terrain)
-        #    self.shaderControl.hide()     
 
     def _loadDisplay(self):
         base.setFrameRateMeter(True)
-        #base.win.setClearColor(Vec4(0, 0, 0, 1))
-        # pos, hpr, and time text
         self.loc_text = addText(0.95, "Score: ", True)
-      #  self.hpr_text = addText(0.90, "[HPR]: ", True)
-       # self.time_text = addText(0.85, "[Time]: ", True)
 
     def _loadTerrain(self):
         populator = TerrainPopulator()
@@ -187,7 +193,6 @@ class World(DirectObject):
             seed = 0
         self.terrain = Terrain('Terrain', base.cam, MAX_VIEW_RANGE, populator, feedBackString=self.bug_text, id=seed)
         self.terrain.reparentTo(render)
-        self.editor = MapEditor(self.terrain)
        # self.terrain.setZ(10)
 
 
@@ -302,26 +307,15 @@ class World(DirectObject):
         if (self.playing == 1):
             self.penguin.update(elapsed)
         self.score = int(self.penguin.getY() * -1)
-       # print(self.score)
-        # Ralph location output
-    #    self.loc_text.setText('[LOC]: %03.1f, %03.1f,%03.1f ' % \
-                       #       (self.penguin.getX(), self.penguin.getY(), self.penguin.getZ()))
         self.loc_text.setText('Score: ' + str(self.score))
-        # camera heading + pitch output
-       # self.hpr_text.setText('[HPR]: %03.1f, %03.1f,%03.1f ' % \
-                #              (self.camera.fulcrum.getH(), self.camera.camNode.getP(), self.camera.camNode.getR()))
-        #self.time_text.setText('[Time]: %02i:%02i' % (self.sky.time / 100, self.sky.time % 100 * 60 / 100))
         # Store the task time and continue.
         self.prevtime = task.time
         self.cTrav.traverse(render)
         
         for entry in self.queue.getEntries():
-            print("collision! Add code to handle game end here!")
             self.penguin.setControl("forward",0)
             myTask = taskMgr.doMethodLater(5, self.stopPenguin, 'tickTask')
-            print(entry)
-            # inp = into node path
-          #  inp = entry.getIntoNodePath().getPos(self.render)  # returns LPoint3f()
+       #     print(entry)
 
         return Task.cont
 
