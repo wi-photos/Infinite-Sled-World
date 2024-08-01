@@ -27,7 +27,6 @@ TerrainTile is a custom implementation of Panda3d's GeoMipMap.
 from collections import deque
 from config import *
 from panda3d.core import *
-from pstat_debug import pstat
 from direct.task.Task import Task
 #from direct.stdpy import threading2 as threading
 import threading
@@ -83,29 +82,24 @@ class TerrainTile(GeoMipTerrain):
         #logging.info("TerrainTile.update()")
         GeoMipTerrain.update(self)
 
-    @pstat
     def updateTask(self, task):
         """Updates the GeoMip to use the correct LOD on each block."""
 
         self.update()
         return task.again
-    #@pstat
     def setHeightField(self, filename):
         """Set the GeoMip heightfield from a heightmap image."""
 
         GeoMipTerrain.setHeightfield(self, filename)
 
-    @pstat
     def generate(self):
         GeoMipTerrain.generate(self)
 
-    @pstat
     def setHeight(self):
         """Sets the height field to match the height map image."""
 
         self.setHeightField(self.image)
 
-    @pstat
     def makeHeightMap(self):
         """Generate a new heightmap image.
 
@@ -196,7 +190,6 @@ class TerrainTile(GeoMipTerrain):
 
         self.statics.setShaderAuto()
 
-    @pstat
     def make(self):
         """Build a finished renderable heightMap."""
 

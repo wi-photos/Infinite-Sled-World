@@ -72,6 +72,7 @@ class World(DirectObject):
         self.temporarygui.reparentTo(aspect2d)
         self.playing = 1
         self.score = 0
+        self.hitObstacle = 0
         base.setBackgroundColor(0, 0, 0)
         self.mainFrame = DirectFrame(frameColor=(0, 0, 0, 1), frameSize=(-2, 2, -2, 2), pos=(0, 0, 0),parent=self.temporarygui)
         self.background = OnscreenImage(image = "textures/bg.jpg", pos = (0, 0, 0), scale = (1.5, 1, 1))
@@ -106,7 +107,7 @@ class World(DirectObject):
     def load(self, task):
         self.playing = 1
         self.score = 0
-        PStatClient.connect()
+        self.hitObstacle = 0
 
         self.bug_text.setText("loading Display...")
         #showFrame()
@@ -293,6 +294,7 @@ class World(DirectObject):
             node.removeNode()
         self.penguin.setPos(0,0,100)
         self.playing = 1
+        self.hitObstacle = 0
         self.penguin.setControl("forward",1)
         
     def stopPenguin(self,task):
@@ -313,9 +315,10 @@ class World(DirectObject):
         self.cTrav.traverse(render)
         
         for entry in self.queue.getEntries():
-            self.penguin.setControl("forward",0)
-            myTask = taskMgr.doMethodLater(5, self.stopPenguin, 'tickTask')
-       #     print(entry)
+            if self.hitObstacle == 0: # we do this so multiple hits wont register
+                self.hitObstacle = 1
+                self.penguin.setControl("forward",0)
+                myTask = taskMgr.doMethodLater(5, self.stopPenguin, 'tickTask')
 
         return Task.cont
 

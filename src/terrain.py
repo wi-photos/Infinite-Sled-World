@@ -40,7 +40,6 @@ from direct.showbase.RandomNumGen import *
 from direct.task.Task import Task
 from panda3d.core import *
 from populator import *
-from pstat_debug import pstat
 from terraintexturer import *
 from terraintile import *
 
@@ -144,7 +143,6 @@ class HeightMap():
         # The closer p1 is to fh, the smaller the mutiplier for p2 becomes.
         # As p2 diminishes, so does the roughness.
 
-    #@pstat
     def getHeight(self, x, y):
         """Returns the height at the specified terrain coordinates.
 
@@ -498,7 +496,6 @@ class Terrain(NodePath):
         self._setupSimpleTasks()
         return Task.done
 
-    #@pstat
     def makeNewTile(self):
         """Generate the closest terrain tile needed."""
 
@@ -539,7 +536,6 @@ class Terrain(NodePath):
 
 
 
-    #@pstat
     def dispatchTile(self, pos):
         """Creates a terrain tile at the input coordinates."""
 
@@ -554,7 +550,6 @@ class Terrain(NodePath):
         self.tileBuilder.build(pos)
         self.tiles[pos] = 1
 
-    #@pstat
     def _generateTile(self, pos):
         """Creates a terrain tile at the input coordinates."""
 
@@ -593,7 +588,6 @@ class Terrain(NodePath):
             return tile
         return None
 
-    #@pstat
     def removeOldTiles(self):
         """Remove distant tiles to free system resources."""
 
