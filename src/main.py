@@ -73,26 +73,8 @@ class World(DirectObject):
         self.playing = 1
         self.score = 0
         self.hitObstacle = 0
-        base.setBackgroundColor(0, 0, 0)
-        self.mainFrame = DirectFrame(frameColor=(0, 0, 0, 1), frameSize=(-2, 2, -2, 2), pos=(0, 0, 0),parent=self.temporarygui)
-        self.background = OnscreenImage(image = "textures/bg.jpg", pos = (0, 0, 0), scale = (1.5, 1, 1))
-        self.background.setTransparency(TransparencyAttrib.MAlpha)
-        self.background.reparentTo(self.mainFrame)
-        self.title = OnscreenText(text="Infinite Sled World",pos=(0,0.8), scale=0.2,fg=(1, 1, 1, 1),parent=self.temporarygui)
-        self.startButton = DirectButton(image = "textures/play.png", scale=(0.5,0.5,0.15), relief = None, command=self.loadGame, pos=(0, 0, -0.8),parent=self.temporarygui)
-        self.startButton.setTransparency(TransparencyAttrib.MAlpha)
-        self.creditsButton = DirectButton(image = "textures/credits.png", scale=(0.3,0.3,0.08),relief = None,  command=self._loadDisplay, pos=(-1, 0, -0.85),parent=self.temporarygui)
-        self.creditsButton.setTransparency(TransparencyAttrib.MAlpha)
-        self.gameInstructions1 = DirectLabel(text="It's an infinite sledding game!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.5),parent=self.temporarygui)
-        self.gameInstructions2 = DirectLabel(text="The goal is simple!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.3),parent=self.temporarygui)
-        self.gameInstructions3 = DirectLabel(text="Avoid obstacles!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.1),parent=self.temporarygui)
-        self.gameInstructions4 = DirectLabel(text="Sled far!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.1),parent=self.temporarygui)
-        self.gameInstructions5 = DirectLabel(text="Use arrow keys to move! Or A and D keys!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.3),parent=self.temporarygui)
-
-     #   self.mySound = loader.loadSfx("music/happy-loop.ogg")
-      #  self.mySound.setLoop(True)
-       # self.mySound.setLoopCount(0)
-        #self.mySound.play()
+        self.initiateMenu()
+        self.accept("escape", sys.exit)
     def loadGame(self):
         # set here your favourite background color - this will be used to fade to
         for node in self.temporarygui.getChildren():
@@ -102,8 +84,49 @@ class World(DirectObject):
         self.splash = SplashCard('textures/loading.png', bgcolor)
         taskMgr.doMethodLater(0.01, self.load, "Load Task")
         self.bug_text = addText(-0.95, "Loading...", True, scale=0.1)
-
-
+    def initiateMenu(self):
+        base.setBackgroundColor(0, 0, 0)
+        self.mainFrame = DirectFrame(frameColor=(0, 0, 0, 1), frameSize=(-2, 2, -2, 2), pos=(0, 0, 0),parent=self.temporarygui)
+        self.background = OnscreenImage(image = "textures/bg.jpg", pos = (0, 0, 0), scale = (1.5, 1, 1))
+        self.background.setTransparency(TransparencyAttrib.MAlpha)
+        self.background.reparentTo(self.mainFrame)
+        self.title = OnscreenText(text="Infinite Sled World",pos=(0,0.8), scale=0.2,fg=(1, 1, 1, 1),parent=self.temporarygui)
+        self.startButton = DirectButton(image = "textures/play.png", scale=(0.5,0.5,0.15), relief = None, command=self.loadGame, pos=(0, 0, -0.8),parent=self.temporarygui)
+        self.startButton.setTransparency(TransparencyAttrib.MAlpha)
+        self.creditsButton = DirectButton(image = "textures/credits.png", scale=(0.3,0.3,0.08),relief = None,  command=self.loadCredits, pos=(-1, 0, -0.85),parent=self.temporarygui)
+        self.creditsButton.setTransparency(TransparencyAttrib.MAlpha)
+        self.gameInstructions1 = DirectLabel(text="It's an infinite sledding game!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.5),parent=self.temporarygui)
+        self.gameInstructions2 = DirectLabel(text="The goal is simple!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.3),parent=self.temporarygui)
+        self.gameInstructions3 = DirectLabel(text="Avoid obstacles!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.1),parent=self.temporarygui)
+        self.gameInstructions4 = DirectLabel(text="Sled far!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.1),parent=self.temporarygui)
+        self.gameInstructions5 = DirectLabel(text="Use arrow keys to move! Or A and D keys!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.3),parent=self.temporarygui)
+        #   self.mySound = loader.loadSfx("music/happy-loop.ogg")
+         #  self.mySound.setLoop(True)
+          # self.mySound.setLoopCount(0)
+           #self.mySound.play()
+    def loadCredits(self):
+       # self.mySound.stop()
+        for node in self.temporarygui.getChildren():
+            node.removeNode()
+        self.mainFrame = DirectFrame(frameColor=(0, 0, 0, 1), frameSize=(-2, 2, -2, 2), pos=(0, 0, 0),parent=self.temporarygui)
+        self.creditsButton = DirectButton(image = "textures/menu.png", scale=(0.3,0.3,0.08),relief = None,  command=self.initiateMenu, pos=(-1, 0, 0.9),parent=self.temporarygui)
+        self.text = TextNode("node name")
+        self.textNodePath = aspect2d.attachNewNode(self.text)
+        self.textNodePath.setScale(0.05)
+        self.textNodePath.setPos(-0.85,0,0.55)
+        self.text.setTextColor(1,1,1,1)
+        self.text.setWordwrap(40)
+        textstring = ""
+        self.textNodePath.reparentTo(self.temporarygui)
+        file1 = open('Credits.txt', 'r')
+        Lines = file1.readlines()
+        count = 0
+        # Strips the newline character
+        for line in Lines:
+            count += 1
+            cc = textstring
+            textstring = cc + line
+        self.text.text= textstring
     def load(self, task):
         self.playing = 1
         self.score = 0
@@ -222,7 +245,6 @@ class World(DirectObject):
         self.camera = FollowCamera(self.penguin, self.terrain)
         
         self.mouseInvertY = False
-        self.accept("escape", sys.exit)
         # movement controls
         self.accept("a", self.penguin.setControl, ["left", 1])
         self.accept("arrow_left", self.penguin.setControl, ["left", 1])
