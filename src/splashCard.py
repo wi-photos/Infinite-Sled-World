@@ -34,7 +34,7 @@ class SplashCard(object):
     #------------------------------------------------------------
     #
     def __init__(self, image, backgroundColor):
-        self.loadingimage = OnscreenImage(image, color=(1, 1, 1, 1), scale=.5, parent=aspect2d)
+        self.loadingimage = OnscreenImage(image, color=(1, 1, 1, 1), scale=(0.7,0.2,0.5), parent=aspect2d)
         self.loadingimage.setTransparency(1)
         # this image will be on top of all therefore we use setBin 'fixed' and with the higher sort value
         self.loadingimage.setBin("fixed", 20)
