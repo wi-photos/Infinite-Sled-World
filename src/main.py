@@ -77,6 +77,7 @@ class World(DirectObject):
         self.accept("escape", sys.exit)
     def loadGame(self):
         # set here your favourite background color - this will be used to fade to
+        self.mySound.stop()
         for node in self.temporarygui.getChildren():
             node.removeNode()
         bgcolor = (0.2, 0.2, 0.2, 1)
@@ -100,12 +101,12 @@ class World(DirectObject):
         self.gameInstructions3 = DirectLabel(text="Avoid obstacles!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.1),parent=self.temporarygui)
         self.gameInstructions4 = DirectLabel(text="Sled far!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.1),parent=self.temporarygui)
         self.gameInstructions5 = DirectLabel(text="Use arrow keys to move! Or A and D keys!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.3),parent=self.temporarygui)
-        #   self.mySound = loader.loadSfx("music/happy-loop.ogg")
-         #  self.mySound.setLoop(True)
-          # self.mySound.setLoopCount(0)
-           #self.mySound.play()
+        self.mySound = loader.loadSfx("music/outer_space.ogg")
+        self.mySound.setLoop(True)
+        self.mySound.setLoopCount(0)
+        self.mySound.play()
     def loadCredits(self):
-       # self.mySound.stop()
+        self.mySound.stop()
         for node in self.temporarygui.getChildren():
             node.removeNode()
         self.mainFrame = DirectFrame(frameColor=(0, 0, 0, 1), frameSize=(-2, 2, -2, 2), pos=(0, 0, 0),parent=self.temporarygui)
@@ -200,6 +201,11 @@ class World(DirectObject):
         yield Task.cont
         self.splash.destroy()
         self.splash = None
+        # game sound
+        self.gameSound = loader.loadSfx("music/Battleinthewinter.ogg")
+        self.gameSound.setLoop(True)
+        self.gameSound.setLoopCount(0)
+        self.gameSound.play()
         
         yield Task.done
         

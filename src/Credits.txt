@@ -16,4 +16,10 @@ Verts https://wordpress.vertices.at
 
 “Wooden Log” by Anthony licensed CC-BY 3.0: https://opengameart.org/content/wooden-log
 
+Music
+“Battle in the winter” by Johan Brodd licensed CC-BY 3.0: https://opengameart.org/content/battle-in-the-winter. The original work has been modified.
+
+All other music by wi-photos
+
 This game was made with Panda3D. Please visit panda3d.org for more information
+
