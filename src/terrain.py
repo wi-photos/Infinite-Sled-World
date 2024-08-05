@@ -414,15 +414,15 @@ class Terrain(NodePath):
         self.buildQueue = deque()
 
         # x and y start are rounded to the nearest multiple of tile size
-        xstart = (int(xpos / self.horizontalScale) / self.tileSize) * self.tileSize
-        ystart = (int(ypos / self.horizontalScale) / self.tileSize) * self.tileSize
+        xstart = (int(xpos // self.horizontalScale) // self.tileSize) * self.tileSize
+        ystart = (int(ypos // self.horizontalScale) // self.tileSize) * self.tileSize
         # check radius is rounded up to the nearest tile size from maxTileDistance
         # not every tile in checkRadius will be made
-        checkRadius = (int(self.maxTileDistance) / self.tileSize + 1) * self.tileSize
+        checkRadius = (int(self.maxTileDistance) // self.tileSize + 1) * self.tileSize
         halfTile = self.tileSize * 0.5
         # build distance for the preloader will be halfway in between the normal
         # load distance and the unloading distance
-        buildDistanceSquared = (self.minTileDistance + self.maxTileDistance) / 2
+        buildDistanceSquared = (self.minTileDistance + self.maxTileDistance) // 2
         buildDistanceSquared = buildDistanceSquared * buildDistanceSquared
 
         for x in range (xstart - checkRadius, xstart + checkRadius, self.tileSize):
@@ -457,15 +457,15 @@ class Terrain(NodePath):
         logging.info("preloading terrain tiles...")
 
         # x and y start are rounded to the nearest multiple of tile size
-        xstart = (int(xpos / self.horizontalScale) / self.tileSize) * self.tileSize
-        ystart = (int(ypos / self.horizontalScale) / self.tileSize) * self.tileSize
+        xstart = (int(xpos // self.horizontalScale) // self.tileSize) * self.tileSize
+        ystart = (int(ypos // self.horizontalScale) // self.tileSize) * self.tileSize
         # check radius is rounded up to the nearest tile size from maxTileDistance
         # not every tile in checkRadius will be made
-        checkRadius = (int(self.maxTileDistance) / self.tileSize + 1) * self.tileSize
+        checkRadius = (int(self.maxTileDistance) // self.tileSize + 1) * self.tileSize
         halfTile = self.tileSize * 0.5
         # build distance for the preloader will be halfway in between the normal
         # load distance and the unloading distance
-        buildDistanceSquared = (self.minTileDistance + self.maxTileDistance) / 2
+        buildDistanceSquared = (self.minTileDistance + self.maxTileDistance) // 2
         buildDistanceSquared = buildDistanceSquared * buildDistanceSquared
 
         for x in range (xstart - checkRadius, xstart + checkRadius, self.tileSize):
@@ -500,14 +500,14 @@ class Terrain(NodePath):
         """Generate the closest terrain tile needed."""
 
         # tiles are placed under the terrain node path which may be scaled
-        x = self.focus.getX(self) / self.horizontalScale
-        y = self.focus.getY(self) / self.horizontalScale
+        x = self.focus.getX(self) // self.horizontalScale
+        y = self.focus.getY(self) // self.horizontalScale
         # start position is the focus position rounded to the multiple of tile size
-        xstart = (int(x) / self.tileSize) * self.tileSize
-        ystart = (int(y) / self.tileSize) * self.tileSize
+        xstart = (int(x) // self.tileSize) * self.tileSize
+        ystart = (int(y) // self.tileSize) * self.tileSize
         # radius is rounded up from minTileDistance to nearest multiple of tile size
         # not every tile within checkRadius will be made
-        checkRadius = (int(self.minTileDistance) / self.tileSize + 1) * self.tileSize
+        checkRadius = (int(self.minTileDistance) // self.tileSize + 1) * self.tileSize
         halfTile = self.tileSize * 0.49
         tiles = self.tiles
 
@@ -591,11 +591,11 @@ class Terrain(NodePath):
     def removeOldTiles(self):
         """Remove distant tiles to free system resources."""
 
-        x = self.focus.getX(self) / self.horizontalScale
-        y = self.focus.getY(self) / self.horizontalScale
+        x = self.focus.getX(self) // self.horizontalScale
+        y = self.focus.getY(self) // self.horizontalScale
         center = self.tileSize * 0.5
         maxDistanceSquared = self.maxTileDistance * self.maxTileDistance
-        for pos, tile in self.tiles.items():
+        for pos, tile in list(self.tiles.items()):
             deltaX = x - (pos[0] + center)
             deltaY = y - (pos[1] + center)
             distance = deltaX * deltaX + deltaY * deltaY
@@ -624,8 +624,8 @@ class Terrain(NodePath):
         x /= self.horizontalScale
         y /= self.horizontalScale
         if SAVED_HEIGHT_MAPS:
-            tilex = (int(x) / self.tileSize) * self.tileSize
-            tiley = (int(y) / self.tileSize) * self.tileSize
+            tilex = (int(x) // self.tileSize) * self.tileSize
+            tiley = (int(y) // self.tileSize) * self.tileSize
             x -= tilex
             y -= tiley
             if (tilex, tiley) in self.tiles:
