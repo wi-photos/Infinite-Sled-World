@@ -40,8 +40,10 @@ loadPrcFileData('', 'save-height-maps #f')
 loadPrcFileData('', 'save-slope-maps #f')
 loadPrcFileData('', 'save-texture-maps #f')
 loadPrcFileData('', 'save-vegetation-maps #f')
+loadPrcFileData('', 'show-frame-rate-meter #f')
 loadPrcFileData('', 'thread-load-terrain #f')
 loadPrcFileData('', 'brute-force-tiles #t')
+loadPrcFileData('', 'window-title Infinite Sled World')
 #loadPrcFileData('', 'multisamples 1')
 loadPrcFileData('', 'textures-power-2 up')
 loadPrcFileData('', 'textures-auto-power-2 #t')
@@ -67,7 +69,7 @@ from config import *
 from creature import *
 class World(DirectObject):
     def __init__(self):
-        print("hi")
+        self.font = loader.loadFont('fonts/KenneyFutureNarrow.ttf')
         self.temporarygui = NodePath('temporary')
         self.temporarygui.reparentTo(aspect2d)
         self.playing = 1
@@ -91,16 +93,16 @@ class World(DirectObject):
         self.background = OnscreenImage(image = "textures/bg.jpg", pos = (0, 0, 0), scale = (1.5, 1, 1))
         self.background.setTransparency(TransparencyAttrib.MAlpha)
         self.background.reparentTo(self.mainFrame)
-        self.title = OnscreenText(text="Infinite Sled World",pos=(0,0.8), scale=0.2,fg=(1, 1, 1, 1),parent=self.temporarygui)
-        self.startButton = DirectButton(image = "textures/play.png", scale=(0.5,0.5,0.15), relief = None, command=self.loadGame, pos=(0, 0, -0.8),parent=self.temporarygui)
+        self.title = OnscreenText(text="Infinite Sled World",pos=(0,0.8), font=self.font, scale=0.2,fg=(1, 1, 1, 1),parent=self.temporarygui)
+        self.startButton = DirectButton(image = "textures/buttonStock1h.png", scale=(0.5,0.5,0.15), relief = None, text_font=self.font, text="Play",text_fg=(255, 255, 255, 100), text_scale=(0.3, 0.8),text_pos=(0, -0.15), command=self.loadGame, pos=(0, 0, -0.8),parent=self.temporarygui)
         self.startButton.setTransparency(TransparencyAttrib.MAlpha)
-        self.creditsButton = DirectButton(image = "textures/credits.png", scale=(0.3,0.3,0.08),relief = None,  command=self.loadCredits, pos=(-1, 0, -0.85),parent=self.temporarygui)
+        self.creditsButton = DirectButton(image = "textures/buttonStock1h.png", scale=(0.3,0.3,0.08),relief = None, text_font=self.font, text="Credits",text_fg=(255, 255, 255, 100), text_scale=(0.2, 0.8),text_pos=(0, -0.15), command=self.loadCredits, pos=(-1, 0, -0.85),parent=self.temporarygui)
         self.creditsButton.setTransparency(TransparencyAttrib.MAlpha)
-        self.gameInstructions1 = DirectLabel(text="It's an infinite sledding game!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.5),parent=self.temporarygui)
-        self.gameInstructions2 = DirectLabel(text="The goal is simple!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.3),parent=self.temporarygui)
-        self.gameInstructions3 = DirectLabel(text="Avoid obstacles!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.1),parent=self.temporarygui)
-        self.gameInstructions4 = DirectLabel(text="Sled far!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.1),parent=self.temporarygui)
-        self.gameInstructions5 = DirectLabel(text="Use arrow keys to move! Or A and D keys!", text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.3),parent=self.temporarygui)
+        self.gameInstructions1 = DirectLabel(text="It's an infinite sledding game!", text_font=self.font,text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.5),parent=self.temporarygui)
+        self.gameInstructions2 = DirectLabel(text="The goal is simple!", text_scale=(0.1, 0.1), text_font=self.font,relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.3),parent=self.temporarygui)
+        self.gameInstructions3 = DirectLabel(text="Avoid obstacles!", text_scale=(0.1, 0.1), text_font=self.font,relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.1),parent=self.temporarygui)
+        self.gameInstructions4 = DirectLabel(text="Sled far!", text_scale=(0.1, 0.1), relief=None, text_font=self.font,text_fg=(255, 255, 255, 100), pos=(0, 0, -0.1),parent=self.temporarygui)
+        self.gameInstructions5 = DirectLabel(text="Use arrow keys to move! Or A and D keys!", text_font=self.font,text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.3),parent=self.temporarygui)
         self.mySound = loader.loadSfx("music/outer_space.ogg")
         self.mySound.setLoop(True)
         self.mySound.setLoopCount(0)
@@ -114,9 +116,10 @@ class World(DirectObject):
         self.text = TextNode("node name")
         self.textNodePath = aspect2d.attachNewNode(self.text)
         self.textNodePath.setScale(0.05)
-        self.textNodePath.setPos(-0.85,0,0.55)
+        self.textNodePath.setPos(-1.15,0,0.65)
         self.text.setTextColor(1,1,1,1)
-        self.text.setWordwrap(40)
+        self.text.setFont(self.font)
+        self.text.setWordwrap(50)
         textstring = ""
         self.textNodePath.reparentTo(self.temporarygui)
         file1 = open('Credits.txt', 'r')
@@ -211,9 +214,8 @@ class World(DirectObject):
         
 
     def _loadDisplay(self):
-        base.setFrameRateMeter(True)
+        base.setFrameRateMeter(False)
         self.loc_text = addText(0.95, "Score: ", True)
-
     def _loadTerrain(self):
         populator = TerrainPopulator()
         populator.addObject(makeTree, {}, 5)
@@ -327,8 +329,8 @@ class World(DirectObject):
         
     def stopPenguin(self,task):
         self.playing = 0
-        OnscreenText(text="Game Over",pos=(0,0), scale=0.3,fg=(1, 1, 1, 1), parent=self.temporarygui) 
-        DirectButton(image = "textures/playagain.png", scale=(0.5,0.5,0.15), relief = None, command=self.playAgain, pos=(0, 0, -0.8), parent=self.temporarygui)
+        OnscreenText(text="Game Over",pos=(0,0), scale=0.3,fg=(1, 1, 1, 1), font=self.font, parent=self.temporarygui) 
+        DirectButton(image = "textures/buttonStock1h.png", scale=(0.5,0.5,0.15), relief = None, text_font=self.font, text="Play Again",text_fg=(255, 255, 255, 100), text_scale=(0.2, 0.6),text_pos=(0, -0.15), command=self.playAgain, pos=(0, 0, -0.8), parent=self.temporarygui)        
         aspect2d.setTransparency(TransparencyAttrib.MAlpha)
 
     def move(self, task):

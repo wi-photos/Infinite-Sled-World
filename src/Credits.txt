@@ -3,23 +3,18 @@
 This game was built upon the "Panda-3d-Procedural-Terrain-Engine" which was created by Stephen Lujan. Special thanks to Stephen for allowing me to use this engine to build this project.
 
 Textures
-
 Verts https://wordpress.vertices.at
-
 “Seamless snow texture” by erxer1 licensed CC-BY 3.0: https://opengameart.org/content/seamless-snow-texture. The original work has been modified.
 
 3D Artwork
-
 Verts https://wordpress.vertices.at
-
 “Tux” by durmieu licensed CC-BY 3.0: https://opengameart.org/content/tux. The original work has been modified.
-
 “Wooden Log” by Anthony licensed CC-BY 3.0: https://opengameart.org/content/wooden-log
 
 Music
 “Battle in the winter” by Johan Brodd licensed CC-BY 3.0: https://opengameart.org/content/battle-in-the-winter. The original work has been modified.
-
 All other music by wi-photos
 
+Font by Kenny.nl
 This game was made with Panda3D. Please visit panda3d.org for more information
 

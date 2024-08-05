@@ -41,8 +41,9 @@ def addText(pos, msg, changeable=False, alignLeft=True, scale=0.05):
     else:
         align = TextNode.ARight
         x *= -1.0
+    font = loader.loadFont('fonts/KenneyFutureNarrow.ttf')
     return OnscreenText(text=msg, style=1, fg=(1, 1, 1, 1),
-                        pos=(x, pos), align=align, scale=scale,
+                        pos=(x, pos), font=font, align=align, scale=scale,
                         mayChange=changeable)
 
 # Function to put title on the screen.
