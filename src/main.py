@@ -75,8 +75,26 @@ class World(DirectObject):
         self.playing = 1
         self.score = 0
         self.hitObstacle = 0
+        self.highscore = 0
+        self.loadHighScore()
         self.initiateMenu()
         self.accept("escape", sys.exit)
+    def loadHighScore(self):
+        filepath = 'isw_highscore'
+        # score file exists
+        if os.path.isfile(filepath):
+           print("File exists")
+           file = open(filepath, "r")
+           content = file.read()
+           content = int(content)
+           self.highscore = content
+           file.close()
+        else:
+           # create file if it does not
+           print("high score does not exist. creating file")
+           with open(filepath, "w") as file:
+               file.write('%d' % self.highscore)
+        print(self.highscore)
     def loadGame(self):
         # set here your favourite background color - this will be used to fade to
         self.mySound.stop()
@@ -98,10 +116,13 @@ class World(DirectObject):
         self.startButton.setTransparency(TransparencyAttrib.MAlpha)
         self.creditsButton = DirectButton(image = "textures/buttonStock1h.png", scale=(0.3,0.3,0.08),relief = None, text_font=self.font, text="Credits",text_fg=(255, 255, 255, 100), text_scale=(0.2, 0.8),text_pos=(0, -0.15), command=self.loadCredits, pos=(-1, 0, -0.85),parent=self.temporarygui)
         self.creditsButton.setTransparency(TransparencyAttrib.MAlpha)
+        self.highscoreButton = DirectButton(image = "textures/buttonStock1h.png", scale=(0.31,0.3,0.08),relief = None, text_font=self.font, text="High Score:0",text_fg=(255, 255, 255, 100), text_scale=(0.12, 0.7),text_pos=(0, -0.15), pos=(1, 0, -0.85),parent=self.temporarygui)
+        self.highscoreButton.setTransparency(TransparencyAttrib.MAlpha)
+        self.highscoreButton.setText("High Score:" + str(self.highscore))
         self.gameInstructions1 = DirectLabel(text="It's an infinite sledding game!", text_font=self.font,text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.5),parent=self.temporarygui)
         self.gameInstructions2 = DirectLabel(text="The goal is simple!", text_scale=(0.1, 0.1), text_font=self.font,relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.3),parent=self.temporarygui)
         self.gameInstructions3 = DirectLabel(text="Avoid obstacles!", text_scale=(0.1, 0.1), text_font=self.font,relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.1),parent=self.temporarygui)
-        self.gameInstructions4 = DirectLabel(text="Sled far!", text_scale=(0.1, 0.1), relief=None, text_font=self.font,text_fg=(255, 255, 255, 100), pos=(0, 0, -0.1),parent=self.temporarygui)
+        self.gameInstructions4 = DirectLabel(text="Sled as far as you can!", text_scale=(0.1, 0.1), relief=None, text_font=self.font,text_fg=(255, 255, 255, 100), pos=(0, 0, -0.1),parent=self.temporarygui)
         self.gameInstructions5 = DirectLabel(text="Use arrow keys to move! Or A and D keys!", text_font=self.font,text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, -0.3),parent=self.temporarygui)
         self.mySound = loader.loadSfx("music/outer_space.ogg")
         self.mySound.setLoop(True)
@@ -112,7 +133,7 @@ class World(DirectObject):
         for node in self.temporarygui.getChildren():
             node.removeNode()
         self.mainFrame = DirectFrame(frameColor=(0, 0, 0, 1), frameSize=(-2, 2, -2, 2), pos=(0, 0, 0),parent=self.temporarygui)
-        self.creditsButton = DirectButton(image = "textures/menu.png", scale=(0.3,0.3,0.08),relief = None,  command=self.initiateMenu, pos=(-1, 0, 0.9),parent=self.temporarygui)
+        self.creditsButton = DirectButton(image = "textures/buttonStock1h.png", scale=(0.3,0.3,0.08),relief = None, text_font=self.font, text="Menu",text_fg=(255, 255, 255, 100), text_scale=(0.2, 0.8),text_pos=(0, -0.15), command=self.initiateMenu, pos=(-1, 0, 0.9),parent=self.temporarygui)
         self.text = TextNode("node name")
         self.textNodePath = aspect2d.attachNewNode(self.text)
         self.textNodePath.setScale(0.05)
@@ -211,7 +232,7 @@ class World(DirectObject):
         self.gameSound.play()
         
         yield Task.done
-        
+    
 
     def _loadDisplay(self):
         base.setFrameRateMeter(False)
@@ -332,6 +353,12 @@ class World(DirectObject):
         OnscreenText(text="Game Over",pos=(0,0), scale=0.3,fg=(1, 1, 1, 1), font=self.font, parent=self.temporarygui) 
         DirectButton(image = "textures/buttonStock1h.png", scale=(0.5,0.5,0.15), relief = None, text_font=self.font, text="Play Again",text_fg=(255, 255, 255, 100), text_scale=(0.2, 0.6),text_pos=(0, -0.15), command=self.playAgain, pos=(0, 0, -0.8), parent=self.temporarygui)        
         aspect2d.setTransparency(TransparencyAttrib.MAlpha)
+        if self.score > self.highscore:
+            filepath = 'isw_highscore'
+            with open(filepath, "w") as file:
+                self.highscore = self.score
+                file.write('%d' % self.score)
+                print("you got a new best score!")
 
     def move(self, task):
         elapsed = task.time - self.prevtime
