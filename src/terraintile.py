@@ -30,7 +30,10 @@ from panda3d.core import *
 from direct.task.Task import Task
 #from direct.stdpy import threading2 as threading
 import threading
-import Queue
+if sys.version_info >= (3, 0):
+    import queue
+else:
+    import Queue
 import time
 
 

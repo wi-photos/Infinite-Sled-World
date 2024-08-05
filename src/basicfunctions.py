@@ -59,27 +59,6 @@ def threadContinue(sleeptime, lock):
     lock.release()
     time.sleep(sleeptime)
     lock.acquire()
-
-def disableMouse():
-    base.disableMouse()
-    props = WindowProperties()
-   # props.setCursorHidden(True)
-    base.win.requestProperties(props)
-
-_MOUSELOOK = True
-def toggleMouseLook():
-    # turned this off
-   # global _MOUSELOOK
-    #_MOUSELOOK = not _MOUSELOOK
-    #props = WindowProperties()
-    #props.setCursorHidden(_MOUSELOOK)
-    #base.win.requestProperties(props)
-    return _MOUSELOOK
-
-def getMouseLook():
-    global _MOUSELOOK
-    return _MOUSELOOK
-
 def screenShot():
     base.screenshot()
     logging.info('screenshot taken.')

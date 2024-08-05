@@ -83,7 +83,6 @@ class World(DirectObject):
         filepath = 'isw_highscore'
         # score file exists
         if os.path.isfile(filepath):
-           print("File exists")
            file = open(filepath, "r")
            content = file.read()
            content = int(content)
@@ -91,7 +90,6 @@ class World(DirectObject):
            file.close()
         else:
            # create file if it does not
-           print("high score does not exist. creating file")
            with open(filepath, "w") as file:
                file.write('%d' % self.highscore)
         print(self.highscore)
@@ -218,7 +216,7 @@ class World(DirectObject):
         self.isMoving = False
         self.firstmove = 1
 
-        disableMouse()
+        base.disableMouse()
         self.bug_text.setText("")
         #showFrame()
         yield Task.cont
@@ -246,10 +244,6 @@ class World(DirectObject):
             seed = 0
         self.terrain = Terrain('Terrain', base.cam, MAX_VIEW_RANGE, populator, feedBackString=self.bug_text, id=seed)
         self.terrain.reparentTo(render)
-       # self.terrain.setZ(10)
-
-
-
     def _loadFilters(self):
         # load default shaders
         cf = CommonFilters(base.win, base.cam)
@@ -284,22 +278,14 @@ class World(DirectObject):
         self.accept("d-up", self.penguin.setControl, ["right", 0])
         self.accept("arrow_right-up", self.penguin.setControl, ["right", 0])
         # other controls
-  #      self.accept("shift", self.penguin.setControl, ["turbo", 1])
-        self.accept("shift", screenShot)
-     #   self.accept("r", self.terrain.initializeHeightMap)
-      #  self.accept("l", self.terrain.toggleWireFrame)
-       # self.accept("t", self.physics.test) #self.terrain.test)
-        #self.accept("e", self.toggleEditor)
-     #   self.accept("w-up", self.penguin.setControl, ["forward", 0])
-
-        
-   #     self.accept("shift-up", self.penguin.setControl, ["turbo", 0])
-        self.accept("wheel_up", self.camera.zoom, [1])
-        self.accept("wheel_down", self.camera.zoom, [0])
-       # self.accept("tab", self.toggleMenu)
+        # good for debugging graphics but leave them off for now
+      #  self.accept("wheel_up", self.camera.zoom, [1])
+      #  self.accept("wheel_down", self.camera.zoom, [0])
        # continuious forward movement
         self.penguin.setControl("forward",1)
         # snow VFX
+        # disable for now because it isn't really workign
+        '''
         base.enableParticles()
         self.p = ParticleEffect()
         self.p.loadConfig("snow.ptf")
@@ -319,6 +305,7 @@ class World(DirectObject):
         self.p4.setScale(0.5)
         self.p4.setY(-100)
         self.p4.start(parent = self.penguin, renderParent = render)
+        '''
         # collision handling for tree coll
         self.cTrav = CollisionTraverser()
         self.queue = CollisionHandlerQueue()
@@ -332,14 +319,6 @@ class World(DirectObject):
        # collider.show() # shows the debug box
     def _loadPhysics(self):
         self.physics = TerrainPhysics()
-    def toggleMenu(self):
-        ml = toggleMouseLook()
-        try: self.shaderControl
-        except: logging.info( "No shader control found.")
-        else: self.shaderControl.setHidden(ml)
-    def toggleEditor(self):
-        ml = toggleMouseLook()
-        self.editor.toggle(not ml)
     def playAgain(self):
         for node in self.temporarygui.getChildren():
             node.removeNode()
@@ -358,8 +337,6 @@ class World(DirectObject):
             with open(filepath, "w") as file:
                 self.highscore = self.score
                 file.write('%d' % self.score)
-                print("you got a new best score!")
-
     def move(self, task):
         elapsed = task.time - self.prevtime
         self.camera.update(0, 0)   
@@ -370,7 +347,9 @@ class World(DirectObject):
         # Store the task time and continue.
         self.prevtime = task.time
         self.cTrav.traverse(render)
-        
+        # update max speed based on score
+        maxspeedstored = 50
+        self.penguin.maxSpeed = maxspeedstored + self.score / 75
         for entry in self.queue.getEntries():
             if self.hitObstacle == 0: # we do this so multiple hits wont register
                 self.hitObstacle = 1
