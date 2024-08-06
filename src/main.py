@@ -75,6 +75,7 @@ class World(DirectObject):
         self.score = 0
         self.hitObstacle = 0
         self.highscore = 0
+        self.snowmoving = 1
         self.loadHighScore()
         self.initiateMenu()
         self.accept("escape", sys.exit)
@@ -165,7 +166,7 @@ class World(DirectObject):
         base.enableMouse()
         base.cam.setPos(0,0,0)
         base.cam.setHpr(0,0,0)
-        self.scene.setPos(0, 2, 0)
+        self.scene.setPos(0, 1.5, 0)
     def load(self, task):
         self.playing = 1
         self.score = 0
@@ -279,7 +280,7 @@ class World(DirectObject):
         self.focus = self.penguin
         self.terrain.setFocus(self.focus)
         # Accept the control keys for movement
-                
+        
         self.camera = FollowCamera(self.penguin, self.terrain)
         
         self.mouseInvertY = False
@@ -298,29 +299,46 @@ class World(DirectObject):
       #  self.accept("wheel_down", self.camera.zoom, [0])
        # continuious forward movement
         self.penguin.setControl("forward",1)
-        # snow VFX
-        # disable for now because it isn't really workign
-        '''
+        # snow VFX        
         base.enableParticles()
-        self.p = ParticleEffect()
-        self.p.loadConfig("snow.ptf")
-        self.p.setZ(20)
-        self.p.setScale(0.5)
-        self.p.setY(-100)
-        self.p.start(parent = self.penguin, renderParent = render)
+        self.snowtrain = NodePath('snowtrain')
+        self.p1 = ParticleEffect()
+        self.p1.loadConfig("snow.ptf")
+       # self.p1.setZ(100)
+        self.p1.setScale(1)
+        self.p1.setY(-50)
+        self.p1.start(parent = self.snowtrain, renderParent = render)
         self.p2 = ParticleEffect()
         self.p2.loadConfig("snow.ptf")
-        self.p2.setZ(20)
-        self.p2.setScale(0.5)
+       # self.p2.setZ(100)
+        self.p2.setScale(1)
         self.p2.setY(-100)
-        self.p2.start(parent = self.penguin, renderParent = render)
+        self.p2.start(parent = self.snowtrain, renderParent = render)
+        self.p3 = ParticleEffect()
+        self.p3.loadConfig("snow.ptf")
+       # self.p3.setZ(100)
+        self.p3.setScale(1)
+        self.p3.setY(-150)
+        self.p3.start(parent = self.snowtrain, renderParent = render)
         self.p4 = ParticleEffect()
         self.p4.loadConfig("snow.ptf")
-        self.p4.setZ(20)
-        self.p4.setScale(0.5)
-        self.p4.setY(-100)
-        self.p4.start(parent = self.penguin, renderParent = render)
-        '''
+       # self.p4.setZ(100)
+        self.p4.setScale(1)
+        self.p4.setY(-200)
+        self.p4.start(parent = self.snowtrain, renderParent = render)
+        self.p5 = ParticleEffect()
+        self.p5.loadConfig("snow.ptf")
+       # self.p5.setZ(100)
+        self.p5.setScale(1)
+        self.p5.setY(-250)
+        self.p5.start(parent = self.snowtrain, renderParent = render)
+        self.p6 = ParticleEffect()
+        self.p6.loadConfig("snow.ptf")
+        #self.p6.setZ(100)
+        self.p6.setScale(1)
+        self.p6.setY(-300)
+        self.p6.start(parent = self.snowtrain, renderParent = render)
+        
         # collision handling for tree coll
         self.cTrav = CollisionTraverser()
         self.queue = CollisionHandlerQueue()
@@ -343,7 +361,7 @@ class World(DirectObject):
         self.penguin.setControl("forward",1)
         self.gameSound.play()
         self.penguin.hideDeflate()
-        
+        self.snowmoving = 1
     def stopPenguin(self,task):
         self.playing = 0
         OnscreenText(text="Game Over",pos=(0,0), scale=0.3,fg=(1, 1, 1, 1), font=self.font, parent=self.temporarygui) 
@@ -361,6 +379,10 @@ class World(DirectObject):
         self.camera.update(0, 0)   
         if (self.playing == 1):
             self.penguin.update(elapsed)
+            if (self.snowmoving == 1):
+                self.snowtrain.setX(self.penguin.getX())
+                self.snowtrain.setY(self.penguin.getY())
+                self.snowtrain.setZ(self.penguin.getZ() + 20)
         self.score = int(self.penguin.getY() * -1)
         self.loc_text.setText('Score: ' + str(self.score))
         # Store the task time and continue.
@@ -378,8 +400,8 @@ class World(DirectObject):
                 self.popsfx = loader.loadSfx("music/balloon.wav")
                 self.popsfx.setLoop(False)
                 self.popsfx.play()
+                self.snowmoving = 0
                 myTask = taskMgr.doMethodLater(5, self.stopPenguin, 'tickTask')
-
         return Task.cont
 
 def launchTerrainDemo():
