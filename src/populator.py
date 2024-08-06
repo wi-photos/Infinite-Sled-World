@@ -30,21 +30,21 @@ import random
 class TreeModel():
     def __init__(self):
         self.np = NodePath('tree')
-        t2 = loader.loadModel( 'models/tree.egg' )
+        t2 = loader.loadModel( 'models/tree' )
         t2.setTwoSided( True )
         t2.reparentTo(self.np)
 copy = NodePath()
 class RockModel():
     def __init__(self):
         self.np = NodePath('tree')
-        t2 = loader.loadModel( 'models/rock.egg' )
+        t2 = loader.loadModel( 'models/rock' )
         #t2.setTwoSided( True )
         t2.reparentTo(self.np)
 copy = NodePath()
 class LogModel():
     def __init__(self):
         self.np = NodePath('tree')
-        t2 = loader.loadModel( 'models/log.egg' )
+        t2 = loader.loadModel( 'models/log' )
        # t2.setTwoSided( True )
         t2.reparentTo(self.np)
         t2.setH(-90)

@@ -649,10 +649,6 @@ class Terrain(NodePath):
     def test(self):
         self.texturer.test()
 
-    def setShaderFloatInput(self, name, input):
-        logging.info("set shader input " + name + " to " + str(input))
-       # self.setShaderInput(name, PTAFloat([input]))
-
     def setFocus(self, nodePath):
         self.focus = nodePath
         for pos, tile in self.tiles.items():

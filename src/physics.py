@@ -37,7 +37,7 @@ class TerrainPhysicsDemo2():
         self.NrObjectToDrop = 10
         self.spawnNP = spawnNP
         self.objects = []
-        self.model = loader.loadModel('models/box.egg')
+        self.model = loader.loadModel('models/box')
         self.model.flattenLight()
         self.shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
 

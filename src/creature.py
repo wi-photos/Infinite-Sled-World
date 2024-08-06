@@ -54,8 +54,18 @@ class Walker(NodePath):
         self.body.setScale(1)
         self.body.setZ(0.8)
         self.body.reparentTo(self)
+        self.bodydeflated = loader.loadModel("models/penguindeflated")
+        self.bodydeflated.setScale(1)
+        self.bodydeflated.setZ(0.8)
+        self.bodydeflated.reparentTo(self)
+        self.bodydeflated.hide()
         self.heightFunction = heightFunction
-
+    def hide_deflate(self):
+        self.bodydeflated.hide()
+        self.body.show()
+    def show_deflate(self):
+        self.body.hide()
+        self.bodydeflated.show()
 
     def accelerate(self, desiredVelocity, elapsed):
         acceleration = self.acceleration * elapsed
@@ -132,7 +142,11 @@ class Player(Walker):
     def __init__(self, heightFunction, x=0, y=0):
         Walker.__init__(self, heightFunction, x, y)
         self.controls = {"left":0, "right":0, "forward":0, "back":0, "turbo":0}
-
+    def hideDeflate(self):
+        Walker.hide_deflate(self)
+    def showDeflate(self):
+        Walker.show_deflate(self)
+        
     def update(self, elapsed):
         heading = -self.getH()
         direction = 0.0

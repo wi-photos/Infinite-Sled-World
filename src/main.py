@@ -28,7 +28,6 @@ This is my Panda 3d Terrain Engine.
 My aim is to create the best possible 100% procedurally generated terrain
 """
 from panda3d.core import loadPrcFileData
-
 loadPrcFileData('', 'max-terrain-height 120')
 loadPrcFileData('', 'default-fov 60')
 loadPrcFileData('', 'default-far 10000')
@@ -92,7 +91,7 @@ class World(DirectObject):
            # create file if it does not
            with open(filepath, "w") as file:
                file.write('%d' % self.highscore)
-        print(self.highscore)
+       # print(self.highscore)
     def loadGame(self):
         # set here your favourite background color - this will be used to fade to
         self.mySound.stop()
@@ -260,7 +259,6 @@ class World(DirectObject):
     def _loadPlayer(self):
         # Create the main character, penguin
         self.penguin = Player(self.terrain.getElevation, 0, 0)
-
         self.focus = self.penguin
         self.terrain.setFocus(self.focus)
         # Accept the control keys for movement
@@ -326,12 +324,16 @@ class World(DirectObject):
         self.playing = 1
         self.hitObstacle = 0
         self.penguin.setControl("forward",1)
+        self.gameSound.play()
+        self.penguin.hideDeflate()
         
     def stopPenguin(self,task):
         self.playing = 0
         OnscreenText(text="Game Over",pos=(0,0), scale=0.3,fg=(1, 1, 1, 1), font=self.font, parent=self.temporarygui) 
         DirectButton(image = "textures/buttonStock1h.png", scale=(0.5,0.5,0.15), relief = None, text_font=self.font, text="Play Again",text_fg=(255, 255, 255, 100), text_scale=(0.2, 0.6),text_pos=(0, -0.15), command=self.playAgain, pos=(0, 0, -0.8), parent=self.temporarygui)        
         aspect2d.setTransparency(TransparencyAttrib.MAlpha)
+        # stop music
+        self.gameSound.stop()
         if self.score > self.highscore:
             filepath = 'isw_highscore'
             with open(filepath, "w") as file:
@@ -354,6 +356,7 @@ class World(DirectObject):
             if self.hitObstacle == 0: # we do this so multiple hits wont register
                 self.hitObstacle = 1
                 self.penguin.setControl("forward",0)
+                self.penguin.showDeflate()
                 myTask = taskMgr.doMethodLater(5, self.stopPenguin, 'tickTask')
 
         return Task.cont
