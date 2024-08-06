@@ -131,6 +131,8 @@ class World(DirectObject):
             node.removeNode()
         self.mainFrame = DirectFrame(frameColor=(0, 0, 0, 1), frameSize=(-2, 2, -2, 2), pos=(0, 0, 0),parent=self.temporarygui)
         self.creditsButton = DirectButton(image = "textures/buttonStock1h.png", scale=(0.3,0.3,0.08),relief = None, text_font=self.font, text="Menu",text_fg=(255, 255, 255, 100), text_scale=(0.2, 0.8),text_pos=(0, -0.15), command=self.initiateMenu, pos=(-1, 0, 0.9),parent=self.temporarygui)
+        self.easteregg = DirectButton(image = "textures/buttonStock1h.png", scale=(0.31,0.3,0.08),relief = None, text_font=self.font, text="Made by: wi-photos",text_fg=(255, 255, 255, 100), command=self.loadEasterEgg,text_scale=(0.12, 0.7),text_pos=(0, -0.15), pos=(1, 0, -0.90),parent=self.temporarygui)
+        self.easteregg.setTransparency(TransparencyAttrib.MAlpha)
         self.text = TextNode("node name")
         self.textNodePath = aspect2d.attachNewNode(self.text)
         self.textNodePath.setScale(0.05)
@@ -149,6 +151,21 @@ class World(DirectObject):
             cc = textstring
             textstring = cc + line
         self.text.text= textstring
+        
+    def loadEasterEgg(self):
+        self.mySound.stop()
+        for node in self.temporarygui.getChildren():
+            node.removeNode()
+        self.scene = loader.loadModel("models/images")
+        self.scene.reparentTo(render)
+        self.scene.setTwoSided(True)
+        self.scene.setHpr(90,90,180)
+        self.scene.setShaderOff()
+        self.scene.setLightOff()
+        base.enableMouse()
+        base.cam.setPos(0,0,0)
+        base.cam.setHpr(0,0,0)
+        self.scene.setPos(0, 2, 0)
     def load(self, task):
         self.playing = 1
         self.score = 0
@@ -357,6 +374,10 @@ class World(DirectObject):
                 self.hitObstacle = 1
                 self.penguin.setControl("forward",0)
                 self.penguin.showDeflate()
+                # pop sfx
+                self.popsfx = loader.loadSfx("music/balloon.wav")
+                self.popsfx.setLoop(False)
+                self.popsfx.play()
                 myTask = taskMgr.doMethodLater(5, self.stopPenguin, 'tickTask')
 
         return Task.cont
