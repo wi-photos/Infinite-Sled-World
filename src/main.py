@@ -114,9 +114,9 @@ class World(DirectObject):
         self.startButton.setTransparency(TransparencyAttrib.MAlpha)
         self.creditsButton = DirectButton(image = "textures/buttonStock1h.png", scale=(0.3,0.3,0.08),relief = None, text_font=self.font, text="Credits",text_fg=(255, 255, 255, 100), text_scale=(0.2, 0.8),text_pos=(0, -0.15), command=self.loadCredits, pos=(-1, 0, -0.85),parent=self.temporarygui)
         self.creditsButton.setTransparency(TransparencyAttrib.MAlpha)
-        self.highscoreButton = DirectButton(image = "textures/buttonStock1h.png", scale=(0.31,0.3,0.08),relief = None, text_font=self.font, text="High Score:0",text_fg=(255, 255, 255, 100), text_scale=(0.12, 0.7),text_pos=(0, -0.15), pos=(1, 0, -0.85),parent=self.temporarygui)
+        highscore = "High Score:" + str(self.highscore)
+        self.highscoreButton = DirectButton(image = "textures/buttonStock1h.png", scale=(0.31,0.3,0.08),relief = None, text_font=self.font, text=highscore,text_fg=(255, 255, 255, 100), text_scale=(0.12, 0.7),text_pos=(0, -0.15), pos=(1, 0, -0.85),parent=self.temporarygui)
         self.highscoreButton.setTransparency(TransparencyAttrib.MAlpha)
-        self.highscoreButton.setText("High Score:" + str(self.highscore))
         self.gameInstructions1 = DirectLabel(text="It's an infinite sledding game!", text_font=self.font,text_scale=(0.1, 0.1), relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.5),parent=self.temporarygui)
         self.gameInstructions2 = DirectLabel(text="The goal is simple!", text_scale=(0.1, 0.1), text_font=self.font,relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.3),parent=self.temporarygui)
         self.gameInstructions3 = DirectLabel(text="Avoid obstacles!", text_scale=(0.1, 0.1), text_font=self.font,relief=None, text_fg=(255, 255, 255, 100), pos=(0, 0, 0.1),parent=self.temporarygui)
@@ -151,7 +151,7 @@ class World(DirectObject):
             count += 1
             cc = textstring
             textstring = cc + line
-        self.text.text= textstring
+        self.text.setText(textstring)
         
     def loadEasterEgg(self):
         self.mySound.stop()
