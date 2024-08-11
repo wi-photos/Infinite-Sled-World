@@ -61,7 +61,6 @@ from sky import *
 from splashCard import *
 from direct.gui.DirectGui import *
 from terrain import *
-from physics import *
 from basicfunctions import *
 from camera import *
 from config import *
@@ -79,6 +78,7 @@ class World(DirectObject):
         self.loadHighScore()
         self.initiateMenu()
         self.accept("escape", sys.exit)
+
     def loadHighScore(self):
         filepath = 'isw_highscore'
         # score file exists
@@ -178,12 +178,6 @@ class World(DirectObject):
         yield Task.cont
         self._loadDisplay()
         
-        self.bug_text.setText("loading physics...")
-        #showFrame()
-        yield Task.cont
-        yield Task.cont
-        self._loadPhysics()
-        
         self.bug_text.setText("loading sky...")
         #showFrame()
         yield Task.cont
@@ -224,7 +218,6 @@ class World(DirectObject):
         yield Task.cont
         yield Task.cont
 
-        self.physics.setup(self.terrain, self.penguin)
 
         taskMgr.add(self.move, "moveTask")
 
@@ -350,8 +343,6 @@ class World(DirectObject):
         collider = self.penguin.attachNewNode(collider_node)
         self.cTrav.addCollider(collider, self.queue)
        # collider.show() # shows the debug box
-    def _loadPhysics(self):
-        self.physics = TerrainPhysics()
     def playAgain(self):
         for node in self.temporarygui.getChildren():
             node.removeNode()
