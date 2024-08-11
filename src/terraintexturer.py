@@ -179,7 +179,10 @@ class ShaderTexturer(TerrainTexturer):
         tex.setWrapU(Texture.WMMirror)
         tex.setWrapV(Texture.WMMirror)
         self.terrain.setTexture(ts, tex)
-        
+        # no lighting or shaders if in browser
+        if sys.platform == "emscripten":
+            self.terrain.setShaderOff()
+            self.terrain.setLightOff()
     
     def apply(self, input):
         """Apply textures and shaders to the input."""

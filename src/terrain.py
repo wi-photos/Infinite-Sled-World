@@ -367,9 +367,12 @@ class Terrain(NodePath):
         horizonInner = self.minTileDistance * 0.5 + self.tileSize + halfTile
         horizonInner *= horizonInner
         # Hacky lod code that sets all tiles at detail level 2
-        for pos, tile in self.tiles.items():
-        
-            tile.setDetail(2)
+        if sys.platform == "emscripten":
+            print("Not setting LOD code because of issues with WEBGL")
+        else:
+            for pos, tile in self.tiles.items():
+                tile.setDetail(2)
+
         '''
         for pos, tile in self.tiles.items():
             deltaX = focusx - (pos[0] + halfTile)

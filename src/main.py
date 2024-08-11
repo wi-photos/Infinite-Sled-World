@@ -256,14 +256,17 @@ class World(DirectObject):
         self.terrain.reparentTo(render)
     def _loadFilters(self):
         # load default shaders
-        cf = CommonFilters(base.win, base.cam)
-        #bloomSize
-        cf.setBloom(size='small', desat=0.7, intensity=0.5, mintrigger=0.6, maxtrigger=0.95)
-        #hdrtype:
-       # render.setAttrib(LightRampAttrib.makeHdr1())
-        #perpixel:
-        #render.setShaderAuto()
-        #base.bufferViewer.toggleEnable()
+        if sys.platform == "emscripten":
+            print("Not setting filter code because of issues with WEBGL")
+        else:
+            cf = CommonFilters(base.win, base.cam)
+            #bloomSize
+            cf.setBloom(size='small', desat=0.7, intensity=0.5, mintrigger=0.6, maxtrigger=0.95)
+            #hdrtype:
+           # render.setAttrib(LightRampAttrib.makeHdr1())
+            #perpixel:
+            #render.setShaderAuto()
+            #base.bufferViewer.toggleEnable()
     def _loadSky(self):
         self.sky = Sky(None)
         self.sky.start()
@@ -292,45 +295,48 @@ class World(DirectObject):
       #  self.accept("wheel_down", self.camera.zoom, [0])
        # continuious forward movement
         self.penguin.setControl("forward",1)
-        # snow VFX        
-        base.enableParticles()
-        self.snowtrain = NodePath('snowtrain')
-        self.p1 = ParticleEffect()
-        self.p1.loadConfig("snow.ptf")
-       # self.p1.setZ(100)
-        self.p1.setScale(1)
-        self.p1.setY(-50)
-        self.p1.start(parent = self.snowtrain, renderParent = render)
-        self.p2 = ParticleEffect()
-        self.p2.loadConfig("snow.ptf")
-       # self.p2.setZ(100)
-        self.p2.setScale(1)
-        self.p2.setY(-100)
-        self.p2.start(parent = self.snowtrain, renderParent = render)
-        self.p3 = ParticleEffect()
-        self.p3.loadConfig("snow.ptf")
-       # self.p3.setZ(100)
-        self.p3.setScale(1)
-        self.p3.setY(-150)
-        self.p3.start(parent = self.snowtrain, renderParent = render)
-        self.p4 = ParticleEffect()
-        self.p4.loadConfig("snow.ptf")
-       # self.p4.setZ(100)
-        self.p4.setScale(1)
-        self.p4.setY(-200)
-        self.p4.start(parent = self.snowtrain, renderParent = render)
-        self.p5 = ParticleEffect()
-        self.p5.loadConfig("snow.ptf")
-       # self.p5.setZ(100)
-        self.p5.setScale(1)
-        self.p5.setY(-250)
-        self.p5.start(parent = self.snowtrain, renderParent = render)
-        self.p6 = ParticleEffect()
-        self.p6.loadConfig("snow.ptf")
-        #self.p6.setZ(100)
-        self.p6.setScale(1)
-        self.p6.setY(-300)
-        self.p6.start(parent = self.snowtrain, renderParent = render)
+        if sys.platform == "emscripten":
+            print("Not setting snow code because of issues with WEBGL")
+        else:
+             # snow VFX        
+             base.enableParticles()
+             self.snowtrain = NodePath('snowtrain')
+             self.p1 = ParticleEffect()
+             self.p1.loadConfig("snow.ptf")
+            # self.p1.setZ(100)
+             self.p1.setScale(1)
+             self.p1.setY(-50)
+             self.p1.start(parent = self.snowtrain, renderParent = render)
+             self.p2 = ParticleEffect()
+             self.p2.loadConfig("snow.ptf")
+            # self.p2.setZ(100)
+             self.p2.setScale(1)
+             self.p2.setY(-100)
+             self.p2.start(parent = self.snowtrain, renderParent = render)
+             self.p3 = ParticleEffect()
+             self.p3.loadConfig("snow.ptf")
+            # self.p3.setZ(100)
+             self.p3.setScale(1)
+             self.p3.setY(-150)
+             self.p3.start(parent = self.snowtrain, renderParent = render)
+             self.p4 = ParticleEffect()
+             self.p4.loadConfig("snow.ptf")
+            # self.p4.setZ(100)
+             self.p4.setScale(1)
+             self.p4.setY(-200)
+             self.p4.start(parent = self.snowtrain, renderParent = render)
+             self.p5 = ParticleEffect()
+             self.p5.loadConfig("snow.ptf")
+            # self.p5.setZ(100)
+             self.p5.setScale(1)
+             self.p5.setY(-250)
+             self.p5.start(parent = self.snowtrain, renderParent = render)
+             self.p6 = ParticleEffect()
+             self.p6.loadConfig("snow.ptf")
+             #self.p6.setZ(100)
+             self.p6.setScale(1)
+             self.p6.setY(-300)
+             self.p6.start(parent = self.snowtrain, renderParent = render)
         
         # collision handling for tree coll
         self.cTrav = CollisionTraverser()
@@ -371,9 +377,12 @@ class World(DirectObject):
         if (self.playing == 1):
             self.penguin.update(elapsed)
             if (self.snowmoving == 1):
-                self.snowtrain.setX(self.penguin.getX())
-                self.snowtrain.setY(self.penguin.getY())
-                self.snowtrain.setZ(self.penguin.getZ() + 20)
+                if sys.platform == "emscripten":
+                    print("Not setting snow code because of issues with WEBGL")
+                else:
+                    self.snowtrain.setX(self.penguin.getX())
+                    self.snowtrain.setY(self.penguin.getY())
+                    self.snowtrain.setZ(self.penguin.getZ() + 20)
         self.score = int(self.penguin.getY() * -1)
         self.loc_text.setText('Score: ' + str(self.score))
         # Store the task time and continue.

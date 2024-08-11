@@ -67,7 +67,10 @@ class TerrainTile(GeoMipTerrain):
 
         #self.setAutoFlatten(GeoMipTerrain.AFMOff)
         self.setFocalPoint(self.terrain.focus)
-        self.setAutoFlatten(GeoMipTerrain.AFMOff)
+        if sys.platform == "emscripten":
+            print("Not setting flatten code because of issues with WEBGL")
+        else:
+            self.setAutoFlatten(GeoMipTerrain.AFMOff)
         self.getRoot().setPos(x, y, 0)
         if self.terrain.bruteForce:
             GeoMipTerrain.setBruteforce(self, True)
@@ -198,7 +201,11 @@ class TerrainTile(GeoMipTerrain):
 
         # apply shader
         #logging.info( "applying shader")
-        self.terrain.texturer.apply(self.getRoot())
+        
+        if sys.platform == "emscripten":
+            print("Not setting tex code because of issues with WEBGL")
+        else:
+            self.terrain.texturer.apply(self.getRoot())
 
         # detail settings
         #self.getRoot().setSx(1.0 / self.heightMapDetail)
@@ -211,7 +218,10 @@ class TerrainTile(GeoMipTerrain):
         #self.getRoot().setSz(self.maxHeight)
 
         #http://www.panda3d.org/forums/viewtopic.php?t=12054
-        self.calcAmbientOcclusion()
+        if sys.platform == "emscripten":
+            print("Not setting ao code because of issues with WEBGL")
+        else:
+            self.calcAmbientOcclusion()
         #logging.info( "generate()")
         self.generate()
         self.getRoot().setCollideMask(BitMask32.bit(1)) 
@@ -316,39 +326,40 @@ class TextureMappedTerrainTile(LodTerrainTile):
         TerrainTile.make(self)
         self.makeSlopeMap()
         textureMapper = self.terrain.texturer.textureMapper
+        if sys.platform == "emscripten":
+            print("Not setting tex code because of issues with WEBGL")
+        else:
+            #try to read textureMaps
+            readTexMaps = True
+            texNum = 0
+            for tex in textureMapper.textures:
+                texNum += 1
+                fileName = "maps/textures/" + self.name + "+_texture" + str(texNum) + ".png"
+                if not tex.image.read(Filename(fileName)):
+                    readTexMaps = False
 
-        #try to read textureMaps
-        readTexMaps = True
-        texNum = 0
-        for tex in textureMapper.textures:
-            texNum += 1
-            fileName = "maps/textures/" + self.name + "+_texture" + str(texNum) + ".png"
-            if not tex.image.read(Filename(fileName)):
-                readTexMaps = False
-
-        #otherwise calculate textureMaps
-        if not readTexMaps:
-            self.terrain.texturer.textureMapper.calculateTextures(self)
-
-        #copy textureMaps to this terrainTile and save if necessary
-        texNum = 0
-        for tex in self.terrain.texturer.textureMapper.textures:
-            texNum += 1
-            self.textureMaps.append(tex.image)
+            #otherwise calculate textureMaps
             if not readTexMaps:
-                tex.image.write(Filename("maps/textures/" + self.name + "+_texture" + str(texNum) + ".png"))
+                self.terrain.texturer.textureMapper.calculateTextures(self)
 
-        #load textureMaps as actual textures for the shaders use
-        num = 0
-        for tex in self.textureMaps:
-            num += 1
-            newTexture = Texture()
-            newTexture.load(tex)
-            ts = TextureStage('alp' + str(num))
-            self.getRoot().setTexture(ts, newTexture)
-        #logging.info( self.getRoot().findAllTextureStages())
+            #copy textureMaps to this terrainTile and save if necessary
+            texNum = 0
+            for tex in self.terrain.texturer.textureMapper.textures:
+                texNum += 1
+                self.textureMaps.append(tex.image)
+                if not readTexMaps:
+                    tex.image.write(Filename("maps/textures/" + self.name + "+_texture" + str(texNum) + ".png"))
 
-    
+            #load textureMaps as actual textures for the shaders use
+            num = 0
+            for tex in self.textureMaps:
+                num += 1
+                newTexture = Texture()
+                newTexture.load(tex)
+                ts = TextureStage('alp' + str(num))
+                self.getRoot().setTexture(ts, newTexture)
+            #logging.info( self.getRoot().findAllTextureStages())
+
 ###############################################################################
 #  makeTile
 ###############################################################################

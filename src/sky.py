@@ -181,14 +181,17 @@ class Sky():
         self.previousTime = 0
         self.nightSkip = True
         self.paused = False
-
-        ambient = Vec4(0.65, 0.75, 1.1, 1) #bright for hdr
-        alight = AmbientLight('alight')
-        alight.setColor(ambient)
-        alnp = render.attachNewNode(alight)
-        render.setLight(alnp)
-     #   render.setShaderInput('alight0', alnp)
-        self.addDirectLight()
+        if sys.platform == "emscripten":
+            print("Not setting lighting code because of issues with WEBGL")
+        else:
+            ambient = Vec4(0.65, 0.75, 1.1, 1) #bright for hdr
+            alight = AmbientLight('alight')
+            alight.setColor(ambient)
+            alnp = render.attachNewNode(alight)
+            render.setLight(alnp)
+            self.addDirectLight()
+        
+        
         
         
     def addDirectLight(self):
