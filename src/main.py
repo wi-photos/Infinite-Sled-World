@@ -75,7 +75,10 @@ class World(DirectObject):
         self.hitObstacle = 0
         self.highscore = 0
         self.snowmoving = 1
-        self.loadHighScore()
+        try:
+          self.loadHighScore()
+        except:
+          print("An exception occurred with loading high score")
         self.initiateMenu()
         self.accept("escape", sys.exit)
 
